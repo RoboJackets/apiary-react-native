@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native/new-app-screen": "0.80.1",
+    "array-equal": "^2.0.0",
     "react": "19.1.0",
     "react-native": "0.80.1",
     "react-native-nfc-manager": "^3.16.2"

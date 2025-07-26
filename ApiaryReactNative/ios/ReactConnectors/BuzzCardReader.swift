@@ -22,9 +22,9 @@ class BuzzCardReader: NSObject, NFCTagReaderSessionDelegate {
   var session: NFCTagReaderSession?
   
   @objc
-  func sendCommand(_ app: Data, cmd: Data, jsCallback: @escaping RCTResponseSenderBlock) {
-    self.selectedApp = app
-    self.selectedCmd = cmd
+  func sendCommand(_ app: [NSNumber], cmd: [NSNumber], jsCallback: @escaping RCTResponseSenderBlock) {
+    self.selectedApp = nsNumberArrayToData(app)
+    self.selectedCmd = nsNumberArrayToData(cmd)
     self.jsCallback = jsCallback
     beginScanning()
   }
@@ -75,9 +75,13 @@ class BuzzCardReader: NSObject, NFCTagReaderSessionDelegate {
     }
     self.sendReadTagCommand(selectedApp!, to: mifareTag) {(responseFromSelect: Data) in }
     self.sendReadTagCommand(selectedCmd!, to: mifareTag) {(responseFromCommand: Data) in
-      if let str = String(data: responseFromCommand, encoding: .windowsCP1252) {
+      var responseContent = responseFromCommand.prefix(responseFromCommand.count - 2)
+      responseContent.append(0x00)
+      let responseCode = responseFromCommand.suffix(2)
+      if (responseCode == Data([0x90, 0x00]) || responseCode == Data([0x91, 0x00])),
+      let _ = String(data: responseContent, encoding: .ascii) {
         self.session?.invalidate()
-        self.jsCallback!([NSNull(), str])
+        self.jsCallback!([NSNull(), self.dataToNSNumberArray(responseFromCommand)])
       } else {
         self.session?.invalidate(errorMessage: "Error decoding BuzzCard output to string.")
         self.jsCallback!([responseFromCommand, NSNull()])
@@ -106,6 +110,15 @@ class BuzzCardReader: NSObject, NFCTagReaderSessionDelegate {
       }
       self.runCommand(tag: tag)
     }
+  }
+  
+  func nsNumberArrayToData(_ numbers: [NSNumber]) -> Data {
+      let bytes = numbers.map { UInt8(truncating: $0) }
+      return Data(bytes)
+  }
+  
+  func dataToNSNumberArray(_ data: Data) -> [NSNumber] {
+      return data.map { NSNumber(value: $0) }
   }
   
   @objc static func requiresMainQueueSetup() -> Bool {
