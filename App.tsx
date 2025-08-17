@@ -1,13 +1,7 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+import { NavigationContainer } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Button, NativeModules, StyleSheet, Text, useColorScheme, View } from 'react-native';
-import NfcScanModal from './Nfc/NfcScanModal';
+import { NativeModules, StyleSheet, useColorScheme } from 'react-native';
+import RootStack from './Navigation/RootStack';
 
 function App() {
   const { BuzzCardReader } = NativeModules;
@@ -22,7 +16,7 @@ function App() {
     setScanning(true);
   }
 
-  return (
+  /*return (
     <View style={styles.container}>
       <Text style={styles.baseText}>
         {readerText}
@@ -40,6 +34,11 @@ function App() {
         setScanning(false);
       }}/>
     </View>
+  );*/
+  return (
+    <NavigationContainer>
+      <RootStack />
+    </NavigationContainer>
   );
 }
 
