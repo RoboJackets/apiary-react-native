@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useContext } from 'react';
-import { AuthContext } from '../App';
+import { AuthContext } from '../Auth/AuthContextProvider';
 import AuthenticationScreen from '../Auth/AuthenticationScreen';
 import NavBar from './NavBar';
 
