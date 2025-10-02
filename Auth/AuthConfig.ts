@@ -4,7 +4,7 @@ import { currentEnvironment } from "../AppEnvironment";
 
 var authConfig: AuthConfiguration | null = null;
 
-export default async function getConfig(): Promise<AuthConfiguration|null> {
+export default async function config(): Promise<AuthConfiguration|null> {
     if (authConfig) {
         return authConfig;
     }

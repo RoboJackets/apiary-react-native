@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundedButton from '../Components/RoundedButton';
 import TransparentButton from '../Components/TransparentButton';
 import RoboBuzzSvg from '../icons/ic_robobuzz_white_outline.svg';
 import { AuthContext } from './AuthContextProvider';
 import * as Authentication from './Authentication';
+import { authError } from './Authentication';
 
 
 function AuthenticationScreen() {
@@ -13,16 +14,16 @@ function AuthenticationScreen() {
     const auth = useContext(AuthContext);
 
     const login = async () => {
-        auth?.setAuthenticated(await Authentication.login());
-        await Authentication.authTokenIsValid();
+        await Authentication.login();
     };
+    useEffect(() => {
+        if (auth?.authenticated === Authentication.AuthenticationState.ERROR) {
+            Alert.alert("Authentication Error", authError ?? 'Authentication failed. Please try again or contact #it-helpdesk for assistance.', [{ text: "OK" }]);
+        }
+        }, [auth?.authenticated]);
 
     return (
     <SafeAreaView style={styles.container}>
-        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Authentication Screen</Text>
-            <Button title="Login" onPress={ login } />
-        </View> */}
         <View style={styles.upper}>
             <RoboBuzzSvg width="40%" height="40%" />
             <RoundedButton title="Sign in with MyRoboJackets" onPress={ login } />

@@ -1,4 +1,6 @@
 
+//TODO: Figure out how to make this environment dynamic based on the app environment selected by the user
+//Additionally allow selecting app environment from the login screen.
 type AppEnvironmentList = {
     [label: string]: AppEnvironment;
 }

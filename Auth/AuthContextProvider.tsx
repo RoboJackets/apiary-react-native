@@ -1,9 +1,9 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { authTokenIsValid } from "./Authentication";
+import { AuthenticationState, authTokenIsValid, getAuthenticationState, refreshAuth, setAuthenticationState, subscribeAuthState } from "./Authentication";
 
 type AuthContextType = {
-  authenticated: boolean | null;
-  setAuthenticated: (u: boolean ) => void;
+  authenticated: AuthenticationState | null;
+  setAuthenticated: (u: AuthenticationState ) => void;
 };
 
 type AuthProviderProps = {
@@ -13,18 +13,26 @@ type AuthProviderProps = {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 function AuthContextProvider({children}: AuthProviderProps) {
-  const [authenticated, setAuthenticated] = useState(false);
+
+  async function loggedIn() {
+    const valid = await authTokenIsValid();
+    if (valid) {
+      setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
+      return true;
+    }
+
+    const refreshSuccess = await refreshAuth();
+    return refreshSuccess;
+  }
+
+  const [authenticated, setAuthenticated] = useState<AuthenticationState | null>(() => getAuthenticationState());
+
   useEffect(() => {
-    authTokenIsValid()
-    .then((auth) => {
-      if (auth) {
-        setAuthenticated(true);
-      } else {
-        setAuthenticated(false);
-      }
-    }).catch((e) => {
-      setAuthenticated(false);
+
+    const unsubscribe = subscribeAuthState((state) => {
+      setAuthenticated(state);
     });
+    loggedIn();
   }, []);
   return(
     <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
