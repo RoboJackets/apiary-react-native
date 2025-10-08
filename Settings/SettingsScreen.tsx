@@ -1,13 +1,14 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
-import { ParamListBase, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 function SettingsScreen() {
-    const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-
-    type SettingsMenuLinkProps = { icon: React.ComponentProps<typeof MaterialIcons>['name'], title: string, subtitle?: string, onClick: () => void };
+    type SettingsMenuLinkProps = { 
+        icon: React.ComponentProps<typeof MaterialIcons>['name'], 
+        title: string, 
+        subtitle?: string, 
+        onClick: () => void 
+    };
     type SettingsHeaderProps = { title: string };
 
     const SettingsHeader = ({ title }: SettingsHeaderProps) => (
@@ -19,7 +20,7 @@ function SettingsScreen() {
     const SettingsMenuLink = ({ icon, title, subtitle, onClick }: SettingsMenuLinkProps) => (
         <TouchableOpacity onPress={onClick} style={{ paddingHorizontal: 10, paddingVertical: 20 }} >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <MaterialIcons name={icon} size={30} color="#666" style={{ paddingHorizontal: 15, paddingVertical: 5 }} />
+                <MaterialIcons name={icon} size={30} color="#666" style={{ paddingHorizontal: 10, paddingVertical: 5 }} />
                 <View style={{ padding: 5, flexShrink: 1 }}>
                     <Text style={{ fontSize: 20 }}>{title}</Text>
                     {subtitle && <Text style={{ fontSize: 15, color: "gray" }}>{subtitle}</Text>}
@@ -32,7 +33,7 @@ function SettingsScreen() {
         <View style={{ padding: 10, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 20 }}>{"Made with ♥ by RoboJackets"}</Text>
         </View>
-    )
+    );
 
     return (
         <SafeAreaView style={{ flex: 1, margin: 10 }} >
@@ -61,7 +62,5 @@ function SettingsScreen() {
         </SafeAreaView>
     );
 }
-
-
 
 export default SettingsScreen;
