@@ -3,19 +3,32 @@ import React, { useState } from 'react';
 import { Button, Text, View } from 'react-native';
 import nfcManager from 'react-native-nfc-manager';
 
-function NfcEnabledScreen() {
-    const [nfcEnabled, setNfcEnabled] = useState<boolean>(false);
+type NfcEnabledProps = { 
+    nfcEnabled: string,
+};
+
+function NfcEnabledScreen({nfcEnabled} : NfcEnabledProps) {
+    const [restart, setRestart] = useState(false);
 
     const enableNfc = async () => {
         await nfcManager.goToNfcSetting();
-        setNfcEnabled(true);
+        setRestart(true);
         return;
     }
 
     return (
         <>
         {
-            !nfcEnabled ? 
+            nfcEnabled === "unsupported" ? 
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 10 }}>
+                <MaterialIcons name={"error-outline"} size={100} color="#b00020" style={{ padding: 10 }} />
+                <Text style={{ fontSize: 30 }}>NFC is unsupported</Text>
+                <Text style={{ fontSize: 20, textAlign: "center", marginBottom: 20 }}>
+                    NFC capability is unsupported on this device.
+                </Text>
+            </View> 
+            :
+            !restart ? 
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 10 }}>
                 <MaterialIcons name={"error-outline"} size={100} color="#b00020" style={{ padding: 10 }} />
                 <Text style={{ fontSize: 30 }}>NFC is disabled</Text>

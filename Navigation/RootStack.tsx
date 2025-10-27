@@ -8,25 +8,33 @@ import NfcEnabledScreen from '../Nfc/NfcEnabledScreen';
 import NavBar from './NavBar';
 
 const Stack = createNativeStackNavigator();
+type NfcState = "enabled" | "disabled" | "unsupported";
 
 function RootStack() {
-    const [nfcEnabled, setNfcEnabled] = useState<boolean>(false);
+    const [nfcEnabled, setNfcEnabled] = useState<NfcState>("disabled");
 
     useEffect(() => {
-        if (Platform.OS === 'android') {
-            const isEnabled = async () => { 
-                try {
-                    const isEnabled = await NfcManager.isEnabled();
-                    setNfcEnabled(isEnabled);
-                } catch (error) {
-                    console.error('Error fetching data:', error);
+        const isEnabled = async () => {
+            try {
+                const isSupported = await NfcManager.isSupported();
+                if (!isSupported) {
+                    setNfcEnabled("unsupported");
+                    return;
                 }
+                if (Platform.OS === 'android') {
+                    const enabled = await NfcManager.isEnabled();
+                    setNfcEnabled(enabled ? "enabled" : "disabled");
+                } else if (Platform.OS === 'ios') {
+                    setNfcEnabled("enabled");
+                } else { // Platform.OS === "windows" | "macos" | "web"
+                    console.log("Not a valid platform for NFC");
+                }
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
             }
-            isEnabled();
-        } else if (Platform.OS !== 'ios') { // nfc capability is always enabled on iOS
-            // Platform.OS == "windows" | "macos" | "web", realistically shouldn't happen
-            console.log("Not a valid platform for NFC");
         }
+        isEnabled();
     }, []); 
     
     const auth = useContext(AuthContext)
@@ -36,8 +44,10 @@ function RootStack() {
                 headerShown: false,
             }}
         >
-        { !nfcEnabled? 
-            <Stack.Screen name="NfcEnabledScreen" component={NfcEnabledScreen} />
+        { nfcEnabled !== "enabled"? 
+            <Stack.Screen name="NfcEnabledScreen">
+                {() => <NfcEnabledScreen nfcEnabled={nfcEnabled} />}
+            </Stack.Screen>
         :
         auth?.authenticated? 
             <Stack.Screen name="Main" component={NavBar} />
