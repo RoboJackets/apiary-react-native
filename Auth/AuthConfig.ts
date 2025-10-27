@@ -1,32 +1,28 @@
 import { Platform } from "react-native";
 import { AuthConfiguration } from "react-native-app-auth";
-import { currentEnvironment } from "../AppEnvironment";
-
-var authConfig: AuthConfiguration | null = null;
+import { AppEnvironment } from "../AppEnvironment";
 
 /**
  * Generates a configuration to send OAuth servers for authentication or refresh.
  * Relies on the current app environment to determine which URL to use.s
  * @returns Current authentication config or null
  */
-export default async function config(): Promise<AuthConfiguration|null> {
-    if (authConfig) {
-        return authConfig;
-    }
+export default async function config(environment: AppEnvironment): Promise<AuthConfiguration|null> {
 
-    let baseUrl: string = currentEnvironment.baseUrl;
-    let response = await fetch(baseUrl + '/api/v1/info');
+    let response = await fetch(environment.baseUrl + '/api/v1/info');
 
     if (! response.ok) {
+        console.log('no worky');
         return null;
     }
 
     let json = await response.json();
+    console.log(json);
 
     let config: AuthConfiguration = {
         serviceConfiguration: {
-            authorizationEndpoint: baseUrl + '/oauth/authorize',
-            tokenEndpoint: baseUrl + '/oauth/token',
+            authorizationEndpoint: environment.baseUrl + '/oauth/authorize',
+            tokenEndpoint: environment.baseUrl + '/oauth/token',
         },
         clientId: Platform.OS === 'android'? 
             json.info.oAuthClients.android.clientId 
@@ -34,8 +30,6 @@ export default async function config(): Promise<AuthConfiguration|null> {
         redirectUrl: 'org.robojackets.apiary://oauth',
         scopes: [],
     };
-
-    authConfig = config;
 
     return config;
 }

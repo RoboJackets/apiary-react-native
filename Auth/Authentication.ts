@@ -2,7 +2,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Platform } from 'react-native';
 import { authorize, AuthorizeResult, refresh } from 'react-native-app-auth';
 import * as Keychain from 'react-native-keychain';
-import { currentEnvironment } from '../AppEnvironment';
+import { AppEnvironment } from '../AppEnvironment';
 import config from './AuthConfig';
 
 export enum AuthenticationState {
@@ -22,11 +22,11 @@ export var authError: string = '';
  * Attempts to store tokens in secure storage on the device using Keychain.
  * @returns boolean: true if login succeeded, false otherwise
  */
-export async function login() {
+export async function login(currentEnvironment: AppEnvironment) {
     let result: AuthorizeResult | null = null;
 
     try {
-        let conf = await config();
+        let conf = await config(currentEnvironment);
         if (conf) {
             result = await authorize(conf);
         } else {
@@ -44,7 +44,7 @@ export async function login() {
     }
     
     if (result) {
-        const store_success = await storeCredentials(result.accessToken, result.refreshToken);
+        const store_success = await storeCredentials(currentEnvironment, result.accessToken, result.refreshToken);
         if (store_success) {
             setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
             return true;
@@ -65,7 +65,7 @@ export async function login() {
  * @param refreshToken string: Refresh token
  * @returns boolean: Whether or not storing keys was successful
  */
-async function storeCredentials(authToken: string, refreshToken: string) {
+async function storeCredentials(currentEnvironment: AppEnvironment, authToken: string, refreshToken: string) {
     let securityLevel = Platform.OS === 'ios'? undefined : Keychain.SECURITY_LEVEL.ANY;
     let storage = Platform.OS === 'ios'? undefined : Keychain.STORAGE_TYPE.AES_GCM_NO_AUTH;
     let options: Keychain.SetOptions = {
@@ -95,7 +95,7 @@ async function storeCredentials(authToken: string, refreshToken: string) {
  * Checks for existence of auth token and whether it is expired.
  * @returns whether auth token is currently valid.
  */
-export async function authTokenIsValid() {
+export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
     let token = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':accessToken');
     if (! token) {
         return false;
@@ -117,7 +117,7 @@ export async function authTokenIsValid() {
  * Checks for existence of a refresh token. Refresh tokens do not store an expiration date.
  * @returns whether or not a refresh token exists
  */
-export async function refreshTokenIsValid() {
+export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
     let token = await (Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken'));
     if (! token || ! token.password) {
         return false;
@@ -129,8 +129,8 @@ export async function refreshTokenIsValid() {
  * Attempts an authentication refresh, stores keys if successful, returns false and sets an error message if not.
  * @returns Whether or not refresh was successful.
  */
-export async function refreshAuth() {
-    let canRefresh = await refreshTokenIsValid();
+export async function refreshAuth(currentEnvironment: AppEnvironment) {
+    let canRefresh = await refreshTokenIsValid(currentEnvironment);
     if (! canRefresh) {
         setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
         return false;
@@ -140,7 +140,7 @@ export async function refreshAuth() {
         setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
         return false;
     }
-    const conf = await config();
+    const conf = await config(currentEnvironment);
     if (! conf) {
         setAuthenticationState(
             AuthenticationState.ERROR, 
@@ -155,9 +155,9 @@ export async function refreshAuth() {
         if (result) {
             let store_success = false;
             if (result.refreshToken) {
-                store_success =  await storeCredentials(result.accessToken, result.refreshToken);
+                store_success =  await storeCredentials(currentEnvironment, result.accessToken, result.refreshToken);
             } else {
-                store_success =  await storeCredentials(result.accessToken, refreshToken.password);
+                store_success =  await storeCredentials(currentEnvironment, result.accessToken, refreshToken.password);
             }
             if (store_success) {
                 setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
@@ -181,7 +181,7 @@ export async function refreshAuth() {
 /**
  * Logs out of the app by deleting credentials and returning to login screen.
  */
-export async function logout() {
+export async function logout(currentEnvironment: AppEnvironment) {
     await Keychain.resetInternetCredentials(
         {server: currentEnvironment.baseUrl + ':accessToken'}
     );

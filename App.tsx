@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { NativeModules, StyleSheet, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AppEnvironmentProvider } from './AppEnvironment';
 import AuthContextProvider from './Auth/AuthContextProvider';
 import RootStack from './Navigation/RootStack';
 
@@ -38,13 +39,15 @@ function App() {
     </View>
   );*/
   return (
-    <SafeAreaProvider>
-      <AuthContextProvider>
-        <NavigationContainer>
-          <RootStack />
-        </NavigationContainer>
-      </AuthContextProvider>
-    </SafeAreaProvider>
+    <AppEnvironmentProvider>
+      <SafeAreaProvider>
+        <AuthContextProvider>
+          <NavigationContainer>
+            <RootStack />
+          </NavigationContainer>
+        </AuthContextProvider>
+      </SafeAreaProvider>
+    </AppEnvironmentProvider>
   );
 }
 

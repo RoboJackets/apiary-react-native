@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { useAppEnvironment } from "../AppEnvironment";
 import { AuthenticationState, authTokenIsValid, getAuthenticationState, refreshAuth, setAuthenticationState, subscribeAuthState } from "./Authentication";
 
 type AuthContextType = {
@@ -14,14 +15,16 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 function AuthContextProvider({children}: AuthProviderProps) {
 
+  const {environment, setEnvironment} = useAppEnvironment();
+
   async function loggedIn() {
-    const valid = await authTokenIsValid();
+    const valid = await authTokenIsValid(environment);
     if (valid) {
       setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
       return true;
     }
 
-    const refreshSuccess = await refreshAuth();
+    const refreshSuccess = await refreshAuth(environment);
     return refreshSuccess;
   }
 
