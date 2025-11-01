@@ -15,29 +15,29 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 function AuthContextProvider({children}: AuthProviderProps) {
 
-  const {environment, setEnvironment} = useAppEnvironment();
-
-  async function loggedIn() {
-    const valid = await authTokenIsValid(environment);
-    if (valid) {
-      setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
-      return true;
-    }
-
-    const refreshSuccess = await refreshAuth(environment);
-    return refreshSuccess;
-  }
+  const {environment} = useAppEnvironment();
 
   const [authenticated, setAuthenticated] = useState<AuthenticationState | null>(() => getAuthenticationState());
 
   useEffect(() => {
+
+    async function loggedIn() {
+      const valid = await authTokenIsValid(environment);
+      if (valid) {
+        setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
+        return true;
+      }
+
+      const refreshSuccess = await refreshAuth(environment);
+      return refreshSuccess;
+    }
 
     const unsubscribe = subscribeAuthState((state) => {
       setAuthenticated(state);
     });
     loggedIn();
     return unsubscribe;
-  }, []);
+  }, [environment]);
   return(
     <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
       {children}

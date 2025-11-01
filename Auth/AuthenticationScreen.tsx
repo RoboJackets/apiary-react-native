@@ -14,7 +14,7 @@ import EnvironmentSelect from './EnvironmentSelect';
 function AuthenticationScreen() {
 
     const auth = useContext(AuthContext);
-    const {environment, setEnvironment} = useAppEnvironment();
+    const {environment} = useAppEnvironment();
     const [envChangeVisible, setEnvChangeVisible] = useState<boolean>(false);
 
     const login = async () => {

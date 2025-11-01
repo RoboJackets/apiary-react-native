@@ -38,25 +38,25 @@ function SettingsScreen() {
     return (
         <SafeAreaView style={{ flex: 1, margin: 10 }} >
             <ScrollView>
-                <SettingsHeader title="Account"></SettingsHeader>
-                <SettingsMenuLink icon="person" title="Refreshing data..." subtitle="Username" onClick={() => { }} ></SettingsMenuLink>
+                <SettingsHeader title="Account" />
+                <SettingsMenuLink icon="person" title="Refreshing data..." subtitle="Username" onClick={() => { }}  />
                 {
                     __DEV__ && // checks if app is running locally
                     <>
-                        <SettingsMenuLink icon="verified-user" title="DEBUG: Recognized permissions" subtitle="None" onClick={() => { }} ></SettingsMenuLink>
-                        <SettingsMenuLink icon="update" title="DEBUG: Open optional update bottom sheet" onClick={() => { }} ></SettingsMenuLink>
-                        <SettingsMenuLink icon="update" title="DEBUG: Open required update prompt" onClick={() => { }} ></SettingsMenuLink>
-                        <SettingsMenuLink icon="update" title="DEBUG: Open update in progress screen" onClick={() => { }} ></SettingsMenuLink>
+                        <SettingsMenuLink icon="verified-user" title="DEBUG: Recognized permissions" subtitle="None" onClick={() => { }}  />
+                        <SettingsMenuLink icon="update" title="DEBUG: Open optional update bottom sheet" onClick={() => { }}  />
+                        <SettingsMenuLink icon="update" title="DEBUG: Open required update prompt" onClick={() => { }}  />
+                        <SettingsMenuLink icon="update" title="DEBUG: Open update in progress screen" onClick={() => { }}  />
                     </>
                 }
-                <SettingsMenuLink icon="logout" title="Logout" onClick={() => { }} ></SettingsMenuLink>
-                <SettingsHeader title="About"></SettingsHeader>
-                <SettingsMenuLink icon="home" title="Server" subtitle="[Server]" onClick={() => { }} ></SettingsMenuLink>
-                <SettingsMenuLink icon="build" title="Version" subtitle="1.5.4" onClick={() => { }} ></SettingsMenuLink>
-                <SettingsMenuLink icon="update" title="App update status" subtitle="Not available" onClick={() => { }} ></SettingsMenuLink>
-                <SettingsMenuLink icon="feedback" title="Make a wish" onClick={() => { }} ></SettingsMenuLink>
-                <SettingsMenuLink icon="privacy-tip" title="Privacy policy" onClick={() => { }} ></SettingsMenuLink>
-                <SettingsMenuLink icon="info" title="Open-source licenses" onClick={() => { }} ></SettingsMenuLink>
+                <SettingsMenuLink icon="logout" title="Logout" onClick={() => { }}  />
+                <SettingsHeader title="About" />
+                <SettingsMenuLink icon="home" title="Server" subtitle="[Server]" onClick={() => { }}  />
+                <SettingsMenuLink icon="build" title="Version" subtitle="1.5.4" onClick={() => { }}  />
+                <SettingsMenuLink icon="update" title="App update status" subtitle="Not available" onClick={() => { }}  />
+                <SettingsMenuLink icon="feedback" title="Make a wish" onClick={() => { }}  />
+                <SettingsMenuLink icon="privacy-tip" title="Privacy policy" onClick={() => { }}  />
+                <SettingsMenuLink icon="info" title="Open-source licenses" onClick={() => { }}  />
                 <MadeWithLove />
             </ScrollView>
         </SafeAreaView>
