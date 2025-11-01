@@ -170,7 +170,7 @@ export async function refreshAuth(currentEnvironment: AppEnvironment) {
         }
     } catch (error) {
         setAuthenticationState(AuthenticationState.ERROR,
-        `Authentication failed: ${error}. Please log in again or contact #it-helpdesk for assistance.`);
+        `Authentication failed: ${error}. Try again or contact #it-helpdesk for assistance.`);
         return false;
     }
 
