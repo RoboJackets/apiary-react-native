@@ -9,17 +9,15 @@ import { AppEnvironment } from "../AppEnvironment";
  */
 export default async function config(environment: AppEnvironment): Promise<AuthConfiguration|null> {
 
-    let response = await fetch(environment.baseUrl + '/api/v1/info');
+    const response = await fetch(environment.baseUrl + '/api/v1/info');
 
     if (! response.ok) {
-        console.log('no worky');
         return null;
     }
 
-    let json = await response.json();
-    console.log(json);
+    const json = await response.json();
 
-    let config: AuthConfiguration = {
+    const config: AuthConfiguration = {
         serviceConfiguration: {
             authorizationEndpoint: environment.baseUrl + '/oauth/authorize',
             tokenEndpoint: environment.baseUrl + '/oauth/token',

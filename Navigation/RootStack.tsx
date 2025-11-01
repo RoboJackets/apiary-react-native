@@ -17,7 +17,8 @@ function RootStack() {
                 headerShown: false,
             }}
         >
-        { auth?.authenticated !== null? (auth?.authenticated === AuthenticationState.AUTHENTICATED?
+        { auth?.authenticated !== null? 
+        (auth?.authenticated === AuthenticationState.AUTHENTICATED?
             <Stack.Screen name="Main" component={NavBar} />
         :
             <Stack.Screen name="Authentication">

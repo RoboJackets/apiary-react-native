@@ -26,7 +26,7 @@ export async function login(currentEnvironment: AppEnvironment) {
     let result: AuthorizeResult | null = null;
 
     try {
-        let conf = await config(currentEnvironment);
+        const conf = await config(currentEnvironment);
         if (conf) {
             result = await authorize(conf);
         } else {
@@ -66,20 +66,20 @@ export async function login(currentEnvironment: AppEnvironment) {
  * @returns boolean: Whether or not storing keys was successful
  */
 async function storeCredentials(currentEnvironment: AppEnvironment, authToken: string, refreshToken: string) {
-    let securityLevel = Platform.OS === 'ios'? undefined : Keychain.SECURITY_LEVEL.ANY;
-    let storage = Platform.OS === 'ios'? undefined : Keychain.STORAGE_TYPE.AES_GCM_NO_AUTH;
-    let options: Keychain.SetOptions = {
+    const securityLevel = Platform.OS === 'ios'? undefined : Keychain.SECURITY_LEVEL.ANY;
+    const storage = Platform.OS === 'ios'? undefined : Keychain.STORAGE_TYPE.AES_GCM_NO_AUTH;
+    const options: Keychain.SetOptions = {
         securityLevel: securityLevel,
         storage: storage,
     };
 
-    let store_success = await Keychain.setInternetCredentials(
+    const store_success = await Keychain.setInternetCredentials(
         currentEnvironment.baseUrl + ':accessToken',
         'accessToken',
         authToken,
         options,
     );
-    let refresh_store_success = await Keychain.setInternetCredentials(
+    const refresh_store_success = await Keychain.setInternetCredentials(
         currentEnvironment.baseUrl + ':refreshToken',
         'refreshToken',
         refreshToken,
@@ -96,17 +96,17 @@ async function storeCredentials(currentEnvironment: AppEnvironment, authToken: s
  * @returns whether auth token is currently valid.
  */
 export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
-    let token = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':accessToken');
+    const token = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':accessToken');
     if (! token) {
         return false;
     }
 
-    let expiry = jwtDecode(token.password).exp;
+    const expiry = jwtDecode(token.password).exp;
     if (! expiry) {
         return false;
     }
     
-    let currentTime = Date.now();
+    const currentTime = Date.now();
     if (currentTime > expiry) {
         return true;
     }
@@ -118,7 +118,7 @@ export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
  * @returns whether or not a refresh token exists
  */
 export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
-    let token = await (Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken'));
+    const token = await (Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken'));
     if (! token || ! token.password) {
         return false;
     }
@@ -130,12 +130,12 @@ export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
  * @returns Whether or not refresh was successful.
  */
 export async function refreshAuth(currentEnvironment: AppEnvironment) {
-    let canRefresh = await refreshTokenIsValid(currentEnvironment);
+    const canRefresh = await refreshTokenIsValid(currentEnvironment);
     if (! canRefresh) {
         setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
         return false;
     }
-    let refreshToken = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken');
+    const refreshToken = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken');
     if (! refreshToken) {
         setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
         return false;

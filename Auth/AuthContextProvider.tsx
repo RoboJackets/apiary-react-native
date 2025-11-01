@@ -36,6 +36,7 @@ function AuthContextProvider({children}: AuthProviderProps) {
       setAuthenticated(state);
     });
     loggedIn();
+    return unsubscribe;
   }, []);
   return(
     <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
