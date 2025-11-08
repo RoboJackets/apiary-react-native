@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { Button, Text, View } from 'react-native';
 import { AuthContext } from '../App';
 
-
 function AuthenticationScreen() {
 
     const auth = useContext(AuthContext);
@@ -12,9 +11,9 @@ function AuthenticationScreen() {
     };
 
     return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <Text>Authentication Screen</Text>
-        <Button title="Login" onPress={ login } />
+        <Button title="Login" onPress={ login }  />
     </View>
     );
 }

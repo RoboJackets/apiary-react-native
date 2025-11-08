@@ -1,8 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
-import React, { createContext, ReactNode, useState } from 'react';
+import React, { createContext, ReactNode, useEffect, useState } from 'react';
 import { NativeModules, StyleSheet, useColorScheme } from 'react-native';
 import RootStack from './Navigation/RootStack';
-
+import { DarkMode, LightMode, Theme } from './Themes/Themes';
 
 type AuthContextType = {
   authenticated: boolean | null;
@@ -24,18 +24,50 @@ function AuthProvider({children}: AuthProviderProps) {
   )
 }
 
+
+type ThemeContextType = {
+  currentTheme: Theme | null | undefined;
+  setTheme: (t: Theme) => void;
+};
+
+type ThemeProviderProps = {
+  children :ReactNode;
+}
+
+export const ThemeContext = createContext< ThemeContextType | undefined>(undefined);
+
+function ThemeProvider({children}: ThemeProviderProps) {
+  const [currentTheme, setTheme] = useState<Theme>(LightMode);
+  const currentSystemTheme = useColorScheme();
+
+  useEffect(() =>{
+    if(currentSystemTheme === "light"){
+        setTheme(LightMode);
+    } else{
+        setTheme(DarkMode)
+    }
+  },[currentSystemTheme])
+
+  return(
+    <ThemeContext.Provider value={{currentTheme, setTheme}}>
+      {children}
+    </ThemeContext.Provider>
+
+  )
+}
+
+
 function App() {
   const { BuzzCardReader } = NativeModules;
-  const isDarkMode = useColorScheme() === 'dark';
   const [readerText, setReaderText] = useState("No text found");
   const [scanning, setScanning] = useState(false);
-
   const selectApp = [0x90, 0x5A, 0x00, 0x00, 0x03, 0xCD, 0xBB, 0xBB, 0x00];
   const readFile = [0x90, 0xBD, 0x00, 0x00, 0x07, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00];
 
   async function readNfc() {
     setScanning(true);
   }
+
 
   /*return (
     <View style={styles.container}>
@@ -58,9 +90,11 @@ function App() {
   );*/
   return (
     <AuthProvider>
+      <ThemeProvider>
       <NavigationContainer>
         <RootStack />
       </NavigationContainer>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

@@ -5,7 +5,6 @@ import React from 'react';
 import AttendanceScreen from '../Attendance/AttendanceScreen';
 import MerchandiseScreen from '../Merchandise/MerchandiseScreen';
 import SettingsScreen from '../Settings/SettingsScreen';
-
 type NavBarProps = {
     hidden?: boolean | null;
 }
