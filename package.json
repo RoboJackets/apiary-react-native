@@ -5,14 +5,9 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest",
-    "clean": "rm -rf node_modules && rm -rf ios/build && rm -rf android/app/build",
-    "compile": "tsc",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
-    "posttest": "npm run lint"
+    "test": "jest"
   },
   "dependencies": {
     "@react-native-vector-icons/material-design-icons": "^12.3.0",
