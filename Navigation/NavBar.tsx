@@ -24,7 +24,7 @@ function NavBar(props: NavBarProps) {
                 name="Attendance" 
                 component={AttendanceScreen} 
                 options={{
-                    tabBarIcon: ({focused, color, size}) => {
+                    tabBarIcon: ({color, size}) => {
                         return (
                             <MaterialDesignIcons
                                 name="contactless-payment-circle-outline" 
@@ -39,7 +39,7 @@ function NavBar(props: NavBarProps) {
                 name="Merchandise" 
                 component={MerchandiseScreen} 
                 options={{
-                    tabBarIcon: ({focused, color, size}) => {
+                    tabBarIcon: ({color, size}) => {
                         return (
                             <MaterialDesignIcons
                                 name="storefront-outline" 
@@ -54,7 +54,7 @@ function NavBar(props: NavBarProps) {
                 name="Settings"
                 component={SettingsScreen} 
                 options={{
-                    tabBarIcon: ({focused, color, size}) => {
+                    tabBarIcon: ({color, size}) => {
                         return (
                             <MaterialIcons 
                                 name="settings" 
