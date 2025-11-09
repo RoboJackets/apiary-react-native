@@ -97,12 +97,12 @@ async function storeCredentials(currentEnvironment: AppEnvironment, authToken: s
  */
 export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
     const token = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':accessToken');
-    if (! token) {
+    if (!token) {
         return false;
     }
 
     const expiry = jwtDecode(token.password).exp;
-    if (! expiry) {
+    if (!expiry) {
         return false;
     }
     
@@ -119,7 +119,7 @@ export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
  */
 export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
     const token = await (Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken'));
-    if (! token || ! token.password) {
+    if (!token || !token.password) {
         return false;
     }
     return true;
@@ -131,17 +131,17 @@ export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
  */
 export async function refreshAuth(currentEnvironment: AppEnvironment) {
     const canRefresh = await refreshTokenIsValid(currentEnvironment);
-    if (! canRefresh) {
+    if (!canRefresh) {
         setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
         return false;
     }
     const refreshToken = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken');
-    if (! refreshToken) {
+    if (!refreshToken) {
         setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
         return false;
     }
     const conf = await config(currentEnvironment);
-    if (! conf) {
+    if (!conf) {
         setAuthenticationState(
             AuthenticationState.ERROR, 
             `Failed to fetch authentication config from the server. Check your network connection and try again.`);

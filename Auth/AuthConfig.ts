@@ -1,4 +1,3 @@
-import { Platform } from "react-native";
 import { AuthConfiguration } from "react-native-app-auth";
 import { AppEnvironment } from "../AppEnvironment";
 
@@ -11,20 +10,19 @@ export default async function config(environment: AppEnvironment): Promise<AuthC
 
     const response = await fetch(environment.baseUrl + '/api/v1/info');
 
-    if (! response.ok) {
+    if (!response.ok) {
         return null;
     }
 
     const json = await response.json();
 
     const config: AuthConfiguration = {
-        serviceConfiguration: {
-            authorizationEndpoint: environment.baseUrl + '/oauth/authorize',
-            tokenEndpoint: environment.baseUrl + '/oauth/token',
-        },
-        clientId: Platform.OS === 'android'? 
-            json.info.oAuthClients.android.clientId 
-            : json.info.oAuthClients.ios.clientId,
+        // serviceConfiguration: {
+        //     authorizationEndpoint: environment.baseUrl + '/oauth/authorize',
+        //     tokenEndpoint: environment.baseUrl + '/oauth/token',
+        // },
+        issuer: environment.baseUrl,
+        clientId: json.info.oAuthClients.reactNative.clientId,
         redirectUrl: 'org.robojackets.apiary://oauth',
         scopes: [],
     };

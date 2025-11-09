@@ -1,8 +1,12 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React from 'react';
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useAppEnvironment } from '../AppEnvironment';
+import { logout } from '../Auth/Authentication';
 
 function SettingsScreen() {
+
+    const {environment} = useAppEnvironment();
     type SettingsMenuLinkProps = { 
         icon: React.ComponentProps<typeof MaterialIcons>['name'], 
         title: string, 
@@ -49,7 +53,7 @@ function SettingsScreen() {
                         <SettingsMenuLink icon="update" title="DEBUG: Open update in progress screen" onClick={() => { }}  />
                     </>
                 }
-                <SettingsMenuLink icon="logout" title="Logout" onClick={() => { }}  />
+                <SettingsMenuLink icon="logout" title="Logout" onClick={() => {logout(environment);}}  />
                 <SettingsHeader title="About" />
                 <SettingsMenuLink icon="home" title="Server" subtitle="[Server]" onClick={() => { }}  />
                 <SettingsMenuLink icon="build" title="Version" subtitle="1.5.4" onClick={() => { }}  />
