@@ -5,12 +5,11 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "gts lint",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "start": "react-native start",
     "test": "jest",
-    "clean": "gts clean",
+    "clean": "rm -rf node_modules && rm -rf ios/build && rm -rf android/app/build",
     "compile": "tsc",
-    "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
     "posttest": "npm run lint"
