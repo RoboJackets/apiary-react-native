@@ -13,8 +13,6 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const unused = 0;
-
 function AuthProvider({ children }: AuthProviderProps) {
   const [authenticated, setAuthenticated] = useState(false);
   return (
