@@ -41,8 +41,8 @@ function ThemeProvider({children}: ThemeProviderProps) {
   const currentSystemTheme = useColorScheme();
 
   useEffect(() =>{
-    useColorScheme() === 'light' ? setTheme(LightMode) : setTheme(DarkMode);
-  },[currentSystemTheme])
+    currentSystemTheme === 'light' ? setTheme(LightMode) : setTheme(DarkMode);
+  },[currentSystemTheme]);
 
   return(
     <ThemeContext.Provider value={{currentTheme, setTheme}}>
