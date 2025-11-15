@@ -3,7 +3,6 @@ import React, { createContext, ReactNode, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import RootStack from './Navigation/RootStack';
 import { DarkMode, LightMode, Theme } from './Themes/Themes';
-import React, { createContext, ReactNode, useState } from 'react';
 
 type AuthContextType = {
   authenticated: boolean | null;
@@ -42,11 +41,7 @@ function ThemeProvider({children}: ThemeProviderProps) {
   const currentSystemTheme = useColorScheme();
 
   useEffect(() =>{
-    if(currentSystemTheme === "light"){
-        setTheme(LightMode);
-    } else{
-        setTheme(DarkMode)
-    }
+    useColorScheme() === 'light' ? setTheme(LightMode) : setTheme(DarkMode);
   },[currentSystemTheme])
 
   return(
