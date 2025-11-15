@@ -24,42 +24,37 @@ function AuthProvider({ children }: AuthProviderProps) {
   );
 }
 
-
 type ThemeContextType = {
   currentTheme: Theme | null | undefined;
   setTheme: (t: Theme) => void;
 };
 
 type ThemeProviderProps = {
-  children :ReactNode;
-}
+  children: ReactNode;
+};
 
-export const ThemeContext = createContext< ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-function ThemeProvider({children}: ThemeProviderProps) {
+function ThemeProvider({ children }: ThemeProviderProps) {
   const [currentTheme, setTheme] = useState<Theme>(LightMode);
   const currentSystemTheme = useColorScheme();
 
-  useEffect(() =>{
+  useEffect(() => {
     currentSystemTheme === 'light' ? setTheme(LightMode) : setTheme(DarkMode);
-  },[currentSystemTheme]);
+  }, [currentSystemTheme]);
 
-  return(
-    <ThemeContext.Provider value={{currentTheme, setTheme}}>
-      {children}
-    </ThemeContext.Provider>
-
-  )
+  return (
+    <ThemeContext.Provider value={{ currentTheme, setTheme }}>{children}</ThemeContext.Provider>
+  );
 }
-
 
 function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-      <NavigationContainer>
-        <RootStack />
-      </NavigationContainer>
+        <NavigationContainer>
+          <RootStack />
+        </NavigationContainer>
       </ThemeProvider>
     </AuthProvider>
   );
