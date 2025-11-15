@@ -41,7 +41,15 @@ function RootStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        title: "MyRoboJackets",
+        headerStyle: {
+          backgroundColor: "#EEB211"
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 24
+        }
       }}
     >
       {nfcEnabled !== 'enabled' ? (
