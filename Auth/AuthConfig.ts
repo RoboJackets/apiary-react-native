@@ -17,10 +17,6 @@ export default async function config(environment: AppEnvironment): Promise<AuthC
     const json = await response.json();
 
     const config: AuthConfiguration = {
-        // serviceConfiguration: {
-        //     authorizationEndpoint: environment.baseUrl + '/oauth/authorize',
-        //     tokenEndpoint: environment.baseUrl + '/oauth/token',
-        // },
         issuer: environment.baseUrl,
         clientId: json.info.oAuthClients.reactNative.clientId,
         redirectUrl: 'org.robojackets.apiary://oauth',

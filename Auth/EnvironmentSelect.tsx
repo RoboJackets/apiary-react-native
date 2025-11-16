@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Modal, RadioButton } from 'react-native-paper';
 import { APP_ENVIRONMENTS, useAppEnvironment } from '../AppEnvironment';
 import RoundedButton from '../Components/RoundedButton';
@@ -16,31 +16,63 @@ export default function EnvironmentSelect({
   
   const {environment, setEnvironment} = useAppEnvironment();
   const [selectedEnv, setSelectedEnv] = useState<string>(environment.name.toLowerCase());
+  const [customUrl, setCustomUrl] = useState<string>('');
 
-    return (
-      <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.sheet}>
-          <Text style={styles.title}>Change Server</Text>
+  useEffect(() => {
+    if (visible) {
+      setSelectedEnv(environment.name.toLowerCase());
+      setCustomUrl('');
+    }
+  }, [visible]);
 
-          <RadioButton.Group onValueChange={setSelectedEnv} value={selectedEnv}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-              <RadioButton.Android value="production" />
-              <Text>Production</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-              <RadioButton.Android value="test" />
-              <Text>Test</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-              <RadioButton.Android value="demo" />
-              <Text>Demo</Text>
-            </View>
-          </RadioButton.Group>
+  return (
+    <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.sheet}>
+        <Text style={styles.title}>Change Server</Text>
+        <RadioButton.Group onValueChange={setSelectedEnv} value={selectedEnv}>
+          <View style={styles.row}>
+            <RadioButton.Android value="production" />
+            <Text>Production</Text>
+          </View>
+          <View style={styles.row}>
+            <RadioButton.Android value="test" />
+            <Text>Test</Text>
+          </View>
+          <View style={styles.row}>
+            <RadioButton.Android value="demo" />
+            <Text>Demo</Text>
+          </View>
+          <View style={styles.row}>
+            <RadioButton.Android value="other" />
+            <Text>Other</Text>
+          </View>
+        </RadioButton.Group>
 
-          <RoundedButton title="Save Changes" onPress={() => {
+        {selectedEnv === "other" && (
+          <TextInput
+            style={styles.textInput}
+            placeholder="Enter base URL"
+            value={customUrl}
+            onChangeText={setCustomUrl}
+          />
+        )}
+
+        <RoundedButton title="Save Changes" onPress={() => {
+          if (selectedEnv === "other") {
+            if (!customUrl.trim()) {
+              onDismiss();
+              return;
+            }
+            setEnvironment({
+              name: "Other",
+              production: false,
+              baseUrl: customUrl,
+            });
+          } else {
             setEnvironment(APP_ENVIRONMENTS[selectedEnv]);
-            onDismiss();
-          }} />
-      </Modal>
+          }
+          onDismiss();
+        }} />
+    </Modal>
   );
 }
 
@@ -59,5 +91,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  textInput: {
+    padding: 8,
+    marginBottom: 12,
   },
 });
