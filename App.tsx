@@ -1,9 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import { useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppEnvironmentProvider } from './AppEnvironment';
 import AuthContextProvider from './Auth/AuthContextProvider';
-import { useColorScheme } from 'react-native';
 import RootStack from './Navigation/RootStack';
 import { DarkMode, LightMode, Theme } from './Themes/Themes';
 
@@ -12,20 +12,7 @@ type AuthContextType = {
   setAuthenticated: (u: boolean) => void;
 };
 
-type AuthProviderProps = {
-  children: ReactNode;
-};
-
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-function AuthProvider({ children }: AuthProviderProps) {
-  const [authenticated, setAuthenticated] = useState(false);
-  return (
-    <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
 
 type ThemeContextType = {
   currentTheme: Theme | null | undefined;

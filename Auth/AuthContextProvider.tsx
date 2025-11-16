@@ -1,10 +1,17 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
-import { useAppEnvironment } from "../AppEnvironment";
-import { AuthenticationState, authTokenIsValid, getAuthenticationState, refreshAuth, setAuthenticationState, subscribeAuthState } from "./Authentication";
+import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import { useAppEnvironment } from '../AppEnvironment';
+import {
+  AuthenticationState,
+  authTokenIsValid,
+  getAuthenticationState,
+  refreshAuth,
+  setAuthenticationState,
+  subscribeAuthState,
+} from './Authentication';
 
 type AuthContextType = {
   authenticated: AuthenticationState | null;
-  setAuthenticated: (u: AuthenticationState ) => void;
+  setAuthenticated: (u: AuthenticationState) => void;
 };
 
 type AuthProviderProps = {
@@ -13,14 +20,14 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function AuthContextProvider({children}: AuthProviderProps) {
+function AuthContextProvider({ children }: AuthProviderProps) {
+  const { environment } = useAppEnvironment();
 
-  const {environment} = useAppEnvironment();
-
-  const [authenticated, setAuthenticated] = useState<AuthenticationState | null>(() => getAuthenticationState());
+  const [authenticated, setAuthenticated] = useState<AuthenticationState | null>(() =>
+    getAuthenticationState(),
+  );
 
   useEffect(() => {
-
     async function loggedIn() {
       const valid = await authTokenIsValid(environment);
       if (valid) {
@@ -38,7 +45,8 @@ function AuthContextProvider({children}: AuthProviderProps) {
     loggedIn();
     return unsubscribe;
   }, [environment]);
-  return(
+
+  return (
     <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
       {children}
     </AuthContext.Provider>

@@ -1,5 +1,5 @@
-import React from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import React from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 export default function LoadingScreen() {
   return (
@@ -12,12 +12,12 @@ export default function LoadingScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
   },
   text: {
-    marginTop: 10,
     fontSize: 16,
+    marginTop: 10,
   },
 });

@@ -1,10 +1,10 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type TransparentButtonProps = {
-    title: string;
-    onPress: () => void;
-}
+  title: string;
+  onPress: () => void;
+};
 
 function TransparentButton(props: TransparentButtonProps) {
   return (
@@ -16,17 +16,17 @@ function TransparentButton(props: TransparentButtonProps) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "transparent",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
     borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
   },
   text: {
-    color: "#007AFF",
+    color: '#007AFF',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });
 

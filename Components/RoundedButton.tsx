@@ -1,10 +1,10 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type RoundedButtonProps = {
-    title: string;
-    onPress: () => void;
-}
+  title: string;
+  onPress: () => void;
+};
 
 function RoundedButton(props: RoundedButtonProps) {
   return (
@@ -16,17 +16,17 @@ function RoundedButton(props: RoundedButtonProps) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    alignItems: 'center',
+    backgroundColor: '#007AFF',
     borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
   },
   text: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });
 

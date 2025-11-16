@@ -23,34 +23,33 @@ interface NfcScanModalProps {
 //   const readFile = [0x90, 0xBD, 0x00, 0x00, 0x07, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00];
 
 const NfcScanModal: React.FC<NfcScanModalProps> = (props: NfcScanModalProps) => {
-    
-    useEffect(() => {
-        const beginScan = async () => {
-            if (Platform.OS === 'ios') {
-                const { BuzzCardReader } = NativeModules;
-                BuzzCardReader.sendCommand(props.appCmd, props.readCmd, props.callback);
-            } else if (Platform.OS === 'android') {
-                try {
-                    await NfcManager.start();
-                    await NfcManager.requestTechnology(NfcTech.IsoDep);
-                    await NfcManager.getTag();
-                    await NfcManager.transceive(props.appCmd);
-                    let result = await NfcManager.transceive(props.readCmd);
-                    props.callback(null, result);
-                } catch (error: any) {
-                    props.callback(error, null);
-                } finally {
-                    NfcManager.cancelTechnologyRequest();
-                }
-            } else {
-                console.log("Not a valid platform for NFC");
-                props.callback(null, null);
-            }
+  useEffect(() => {
+    const beginScan = async () => {
+      if (Platform.OS === 'ios') {
+        const { BuzzCardReader } = NativeModules;
+        BuzzCardReader.sendCommand(props.appCmd, props.readCmd, props.callback);
+      } else if (Platform.OS === 'android') {
+        try {
+          await NfcManager.start();
+          await NfcManager.requestTechnology(NfcTech.IsoDep);
+          await NfcManager.getTag();
+          await NfcManager.transceive(props.appCmd);
+          const result = await NfcManager.transceive(props.readCmd);
+          props.callback(null, result);
+        } catch (error: unknown) {
+          props.callback(error instanceof Error ? error : new Error(String(error)), null);
+        } finally {
+          NfcManager.cancelTechnologyRequest();
         }
-        if (props.scanning) {
-            beginScan();
-        }
-    }, [props]);
+      } else {
+        console.log('Not a valid platform for NFC');
+        props.callback(null, null);
+      }
+    };
+    if (props.scanning) {
+      beginScan();
+    }
+  }, [props]);
 
   return (
     <Modal transparent visible={props.scanning && Platform.OS === 'android'} animationType="fade">
