@@ -1,13 +1,22 @@
 import React, { useEffect } from 'react';
-import { ActivityIndicator, Modal, NativeModules, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Modal,
+  NativeModules,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import NfcManager, { NfcTech } from 'react-native-nfc-manager';
 
 interface NfcScanModalProps {
-    scanning: boolean;
-    appCmd: number[];
-    readCmd: number[];
-    modalText: string;
-    callback: (error: Error | null, result: number[] | null) => void;
+  scanning: boolean;
+  appCmd: number[];
+  readCmd: number[];
+  modalText: string;
+  callback: (error: Error | null, result: number[] | null) => void;
 }
 // These are used for BuzzCard reading and will be needed later.
 //   const selectApp = [0x90, 0x5A, 0x00, 0x00, 0x03, 0xCD, 0xBB, 0xBB, 0x00];
@@ -43,51 +52,51 @@ const NfcScanModal: React.FC<NfcScanModalProps> = (props: NfcScanModalProps) => 
         }
     }, [props]);
 
-    return (
-        <Modal transparent visible={props.scanning && Platform.OS === 'android'} animationType="fade">
-            <View style={styles.overlay}>
-                <View style={styles.container}>
-                    <ActivityIndicator size="large" />
-                    <Text style={styles.text}>{props.modalText}</Text>
-                    <Pressable onPress={() => props.callback(null, null)} style={styles.button}>
-                        <Text style={styles.buttonText}>Cancel</Text>
-                    </Pressable>
-                </View>
-            </View>
-        </Modal>
-    );
+  return (
+    <Modal transparent visible={props.scanning && Platform.OS === 'android'} animationType="fade">
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <ActivityIndicator size="large" />
+          <Text style={styles.text}>{props.modalText}</Text>
+          <Pressable onPress={() => props.callback(null, null)} style={styles.button}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
+  );
 };
 
 // TODO: Add styles to mat
 const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    container: {
-        backgroundColor: 'white',
-        padding: 24,
-        borderRadius: 12,
-        alignItems: 'center',
-        width: 300,
-    },
-    text: {
-        marginTop: 16,
-        marginBottom: 24,
-        textAlign: 'center',
-    },
-    button: {
-        paddingHorizontal: 24,
-        paddingVertical: 12,
-        backgroundColor: '#007AFF',
-        borderRadius: 6,
-    },
-    buttonText: {
-        color: 'white',
-        fontWeight: '600',
-    },
+  button: {
+    backgroundColor: '#007AFF',
+    borderRadius: 6,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  container: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    width: 300,
+  },
+  overlay: {
+    alignItems: 'center',
+    backgroundColor: '#00000080',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  text: {
+    marginBottom: 24,
+    marginTop: 16,
+    textAlign: 'center',
+  },
 });
 
 export default NfcScanModal;

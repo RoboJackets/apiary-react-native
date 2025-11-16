@@ -10,9 +10,8 @@ import * as Authentication from './Authentication';
 import { authError } from './Authentication';
 import EnvironmentSelect from './EnvironmentSelect';
 
-
 function AuthenticationScreen() {
-
+  const auth = useContext(AuthContext);
     const auth = useContext(AuthContext);
     const {environment} = useAppEnvironment();
     const [envChangeVisible, setEnvChangeVisible] = useState<boolean>(false);

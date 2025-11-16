@@ -15,29 +15,23 @@ function SettingsScreen() {
     };
     type SettingsHeaderProps = { title: string };
 
-    const SettingsHeader = ({ title }: SettingsHeaderProps) => (
-        <View style={{ padding: 10 }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
-        </View>
-    );
+  const SettingsHeader = ({ title }: SettingsHeaderProps) => (
+    <View style={styles.headerContainer}>
+      <Text style={styles.headerText}>{title}</Text>
+    </View>
+  );
 
-    const SettingsMenuLink = ({ icon, title, subtitle, onClick }: SettingsMenuLinkProps) => (
-        <TouchableOpacity onPress={onClick} style={{ paddingHorizontal: 10, paddingVertical: 20 }} >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <MaterialIcons name={icon} size={30} color="#666" style={{ paddingHorizontal: 10, paddingVertical: 5 }} />
-                <View style={{ padding: 5, flexShrink: 1 }}>
-                    <Text style={{ fontSize: 20 }}>{title}</Text>
-                    {subtitle && <Text style={{ fontSize: 15, color: "gray" }}>{subtitle}</Text>}
-                </View>
-            </View>
-        </TouchableOpacity>
-    );
-
-    const MadeWithLove = () => (
-        <View style={{ padding: 10, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 20 }}>{"Made with ♥ by RoboJackets"}</Text>
+  const SettingsMenuLink = ({ icon, title, subtitle, onClick }: SettingsMenuLinkProps) => (
+    <TouchableOpacity onPress={onClick} style={styles.menuLinkTouchable}>
+      <View style={styles.menuLinkRow}>
+        <MaterialIcons name={icon} size={30} color="#666" style={styles.menuIcon} />
+        <View style={styles.menuTextContainer}>
+          <Text style={styles.menuTitle}>{title}</Text>
+          {subtitle && <Text style={styles.menuSubtitle}>{subtitle}</Text>}
         </View>
-    );
+      </View>
+    </TouchableOpacity>
+  );
 
     return (
         <SafeAreaView style={{ flex: 1, margin: 10 }} >
@@ -66,5 +60,50 @@ function SettingsScreen() {
         </SafeAreaView>
     );
 }
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 10,
+  },
+  headerContainer: {
+    padding: 10,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  madeWithLoveContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  madeWithLoveText: {
+    fontSize: 20,
+  },
+  menuIcon: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  menuLinkRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  menuLinkTouchable: {
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+  },
+  menuSubtitle: {
+    color: 'gray',
+    fontSize: 15,
+  },
+  menuTextContainer: {
+    flexShrink: 1,
+    padding: 5,
+  },
+  menuTitle: {
+    fontSize: 20,
+  },
+});
 
 export default SettingsScreen;
