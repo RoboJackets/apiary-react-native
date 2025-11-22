@@ -30,14 +30,6 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
           <Text>Production</Text>
         </View>
         <View style={styles.row}>
-          <RadioButton.Android value="test" />
-          <Text>Test</Text>
-        </View>
-        <View style={styles.row}>
-          <RadioButton.Android value="demo" />
-          <Text>Demo</Text>
-        </View>
-        <View style={styles.row}>
           <RadioButton.Android value="other" />
           <Text>Other</Text>
         </View>
@@ -49,6 +41,7 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
           placeholder="Enter base URL"
           value={customUrl}
           onChangeText={setCustomUrl}
+          autoCapitalize="none"
         />
       )}
 

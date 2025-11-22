@@ -29,14 +29,12 @@ function AuthContextProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     async function loggedIn() {
-      const valid = await authTokenIsValid(environment);
-      if (valid) {
+      if (await authTokenIsValid(environment)) {
         setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
         return true;
       }
 
-      const refreshSuccess = await refreshAuth(environment);
-      return refreshSuccess;
+      return await refreshAuth(environment);
     }
 
     const unsubscribe = subscribeAuthState((state) => {

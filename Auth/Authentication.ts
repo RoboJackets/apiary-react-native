@@ -95,10 +95,11 @@ async function storeCredentials(
     refreshToken,
     options,
   );
-  if (store_success && refresh_store_success) {
-    return true;
-  }
-  return false;
+  //   if (store_success && refresh_store_success) {
+  //     return true;
+  //   }
+  //   return false;
+  return store_success && refresh_store_success;
 }
 
 /**
@@ -129,10 +130,7 @@ export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
  */
 export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
   const token = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken');
-  if (!token || !token.password) {
-    return false;
-  }
-  return true;
+  return token && token.password;
 }
 
 /**
@@ -140,8 +138,7 @@ export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
  * @returns Whether or not refresh was successful.
  */
 export async function refreshAuth(currentEnvironment: AppEnvironment) {
-  const canRefresh = await refreshTokenIsValid(currentEnvironment);
-  if (!canRefresh) {
+  if (!(await refreshTokenIsValid(currentEnvironment))) {
     setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
     return false;
   }
@@ -166,7 +163,7 @@ export async function refreshAuth(currentEnvironment: AppEnvironment) {
     });
 
     if (result) {
-      let store_success = false;
+      let store_success: Keychain.Result | false = false;
       if (result.refreshToken) {
         store_success = await storeCredentials(
           currentEnvironment,

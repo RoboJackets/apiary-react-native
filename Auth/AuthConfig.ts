@@ -3,7 +3,7 @@ import { AppEnvironment } from '../AppEnvironment';
 
 /**
  * Generates a configuration to send OAuth servers for authentication or refresh.
- * Relies on the current app environment to determine which URL to use.s
+ * Relies on the current app environment to determine which URL to use.
  * @returns Current authentication config or null
  */
 export default async function config(
