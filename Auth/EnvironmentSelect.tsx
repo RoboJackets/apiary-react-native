@@ -27,7 +27,7 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), 3000);
     try {
-      const resp = await fetch(`${url}/api/v1/info`, { method: "GET", signal: controller.signal });
+      const resp = await fetch(`${url}/api/v1/info`, { method: 'GET', signal: controller.signal });
       clearTimeout(id);
       return resp.ok;
     } catch (error: unknown) {
@@ -60,11 +60,7 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
         />
       )}
 
-      {error && (
-        <Text style={styles.errorText}>
-          {error}
-        </Text>
-      )}
+      {error && <Text style={styles.errorText}>{error}</Text>}
 
       <RoundedButton
         title="Save Changes"
@@ -74,7 +70,7 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
               setError('Custom URL cannot be empty.');
               return;
             }
-            if (!await validateUrl(customUrl.trim())) {
+            if (!(await validateUrl(customUrl.trim()))) {
               setError('Custom URL is invalid.');
               return;
             }
@@ -95,6 +91,11 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
 }
 
 const styles = StyleSheet.create({
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 6,
+  },
   row: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -118,10 +119,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
     textAlign: 'center',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginTop: 6,
   },
 });
