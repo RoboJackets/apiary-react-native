@@ -13,13 +13,28 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
   const { environment, setEnvironment } = useAppEnvironment();
   const [selectedEnv, setSelectedEnv] = useState<string>(environment.name.toLowerCase());
   const [customUrl, setCustomUrl] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (visible) {
       setSelectedEnv(environment.name.toLowerCase());
-      setCustomUrl('');
+      setCustomUrl(environment.production ? '' : environment.baseUrl.toLowerCase());
+      setError(null);
     }
   }, [visible]);
+
+  async function validateUrl(url: string) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 3000);
+    try {
+      const resp = await fetch(`${url}/api/v1/info`, { method: "GET", signal: controller.signal });
+      clearTimeout(id);
+      return resp.ok;
+    } catch (error: unknown) {
+      clearTimeout(id);
+      return false;
+    }
+  }
 
   return (
     <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.sheet}>
@@ -45,12 +60,22 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
         />
       )}
 
+      {error && (
+        <Text style={styles.errorText}>
+          {error}
+        </Text>
+      )}
+
       <RoundedButton
         title="Save Changes"
-        onPress={() => {
+        onPress={async () => {
           if (selectedEnv === 'other') {
             if (!customUrl.trim()) {
-              onDismiss();
+              setError('Custom URL cannot be empty.');
+              return;
+            }
+            if (!await validateUrl(customUrl.trim())) {
+              setError('Custom URL is invalid.');
               return;
             }
             setEnvironment({
@@ -61,6 +86,7 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
           } else {
             setEnvironment(APP_ENVIRONMENTS[selectedEnv]);
           }
+          setError(null);
           onDismiss();
         }}
       />
@@ -92,5 +118,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 6,
   },
 });

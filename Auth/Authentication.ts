@@ -95,10 +95,7 @@ async function storeCredentials(
     refreshToken,
     options,
   );
-  //   if (store_success && refresh_store_success) {
-  //     return true;
-  //   }
-  //   return false;
+  
   return store_success && refresh_store_success;
 }
 
