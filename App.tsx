@@ -1,79 +1,57 @@
 import { NavigationContainer } from '@react-navigation/native';
-import React, { createContext, ReactNode, useState } from 'react';
-import { NativeModules, StyleSheet, useColorScheme } from 'react-native';
+import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import { useColorScheme } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AppEnvironmentProvider } from './AppEnvironment';
+import AuthContextProvider from './Auth/AuthContextProvider';
 import RootStack from './Navigation/RootStack';
-
+import { DarkMode, LightMode, Theme } from './Themes/Themes';
 
 type AuthContextType = {
   authenticated: boolean | null;
-  setAuthenticated: (u: boolean ) => void;
+  setAuthenticated: (u: boolean) => void;
 };
-
-type AuthProviderProps = {
-  children: ReactNode;
-}
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function AuthProvider({children}: AuthProviderProps) {
-  const [authenticated, setAuthenticated] = useState(false);
-  return(
-    <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
+type ThemeContextType = {
+  currentTheme: Theme | null | undefined;
+  setTheme: (t: Theme) => void;
+};
 
-function App() {
-  const { BuzzCardReader } = NativeModules;
-  const isDarkMode = useColorScheme() === 'dark';
-  const [readerText, setReaderText] = useState("No text found");
-  const [scanning, setScanning] = useState(false);
+type ThemeProviderProps = {
+  children: ReactNode;
+};
 
-  const selectApp = [0x90, 0x5A, 0x00, 0x00, 0x03, 0xCD, 0xBB, 0xBB, 0x00];
-  const readFile = [0x90, 0xBD, 0x00, 0x00, 0x07, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00];
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-  async function readNfc() {
-    setScanning(true);
-  }
+function ThemeProvider({ children }: ThemeProviderProps) {
+  const [currentTheme, setTheme] = useState<Theme>(LightMode);
+  const currentSystemTheme = useColorScheme();
 
-  /*return (
-    <View style={styles.container}>
-      <Text style={styles.baseText}>
-        {readerText}
-      </Text>
-      <Button title="Scan" onPress={readNfc} />
-      <NfcScanModal scanning={scanning} appCmd={selectApp} 
-      readCmd={readFile} modalText='Place your BuzzCard near the phone.'
-      callback={(error, result) => {
-        if (error) {
-          setReaderText(error.message);
-        } else {
-          //setReaderText(result?.toString() ?? 'yeet');
-          setReaderText(typeof result);
-        }
-        setScanning(false);
-      }}/>
-    </View>
-  );*/
+  useEffect(() => {
+    currentSystemTheme === 'light' ? setTheme(LightMode) : setTheme(DarkMode);
+  }, [currentSystemTheme]);
+
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <RootStack />
-      </NavigationContainer>
-    </AuthProvider>
+    <ThemeContext.Provider value={{ currentTheme, setTheme }}>{children}</ThemeContext.Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-    baseText: {
-    fontFamily: 'Cochin',
-    textAlign: 'center',
-    marginTop: 50,
-  },
-});
+function App() {
+  return (
+    <AppEnvironmentProvider>
+      <SafeAreaProvider>
+        <AuthContextProvider>
+          <ThemeProvider>
+            <NavigationContainer>
+              <RootStack />
+            </NavigationContainer>
+          </ThemeProvider>
+        </AuthContextProvider>
+      </SafeAreaProvider>
+    </AppEnvironmentProvider>
+  );
+}
 
 export default App;

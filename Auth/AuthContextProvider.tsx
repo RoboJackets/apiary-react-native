@@ -1,0 +1,54 @@
+import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import { useAppEnvironment } from '../AppEnvironment';
+import {
+  AuthenticationState,
+  authTokenIsValid,
+  getAuthenticationState,
+  refreshAuth,
+  setAuthenticationState,
+  subscribeAuthState,
+} from './Authentication';
+
+type AuthContextType = {
+  authenticated: AuthenticationState | null;
+  setAuthenticated: (u: AuthenticationState) => void;
+};
+
+type AuthProviderProps = {
+  children: ReactNode;
+};
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+function AuthContextProvider({ children }: AuthProviderProps) {
+  const { environment } = useAppEnvironment();
+
+  const [authenticated, setAuthenticated] = useState<AuthenticationState | null>(() =>
+    getAuthenticationState(),
+  );
+
+  useEffect(() => {
+    async function loggedIn() {
+      if (await authTokenIsValid(environment)) {
+        setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
+        return true;
+      }
+
+      return await refreshAuth(environment);
+    }
+
+    const unsubscribe = subscribeAuthState((state) => {
+      setAuthenticated(state);
+    });
+    loggedIn();
+    return unsubscribe;
+  }, [environment]);
+
+  return (
+    <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export default AuthContextProvider;
