@@ -100,6 +100,19 @@ async function storeCredentials(
 }
 
 /**
+ * Gets the auth token from Keychain storage.
+ * @param currentEnvironment Current AppEnvironment.
+ * @returns Token if exists, null otherwise
+ */
+export async function getAuthToken(currentEnvironment: AppEnvironment) {
+  const token = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':accessToken');
+  if (!token) {
+    return null;
+  }
+  return token;
+}
+
+/**
  * Checks for existence of auth token and whether it is expired.
  * @returns whether auth token is currently valid.
  */
@@ -136,14 +149,20 @@ export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
  */
 export async function refreshAuth(currentEnvironment: AppEnvironment) {
   if (!(await refreshTokenIsValid(currentEnvironment))) {
-    setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
+    setAuthenticationState(
+      AuthenticationState.ERROR, 
+      'Failed to refresh authentication due to invalid tokens. Please log in again. If the issue persists, contact #it-helpdesk.'
+    );
     return false;
   }
   const refreshToken = await Keychain.getInternetCredentials(
     currentEnvironment.baseUrl + ':refreshToken',
   );
   if (!refreshToken) {
-    setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
+    setAuthenticationState(
+      AuthenticationState.ERROR,
+      'Failed to refresh authentication because no refresh token was found. Please log in again. If the issue persists, contact #it-helpdesk.'
+    );
     return false;
   }
   const conf = await config(currentEnvironment);
