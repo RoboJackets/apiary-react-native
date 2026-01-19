@@ -127,11 +127,8 @@ export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
     return false;
   }
 
-  const currentTime = Date.now();
-  if (currentTime > expiry) {
-    return true;
-  }
-  return false;
+  const currentTime = Math.floor(Date.now() / 1000);
+  return currentTime < expiry;
 }
 
 /**
