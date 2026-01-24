@@ -13,7 +13,7 @@ type ThemeProviderProps = {
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-function ThemeProvider({ children }: ThemeProviderProps) {
+export default function ThemeProvider({ children }: ThemeProviderProps) {
   const [currentTheme, setTheme] = useState<Theme>(LightMode);
   const currentSystemTheme = useColorScheme();
 
@@ -26,7 +26,7 @@ function ThemeProvider({ children }: ThemeProviderProps) {
   );
 }
 
-function useTheme() {
+export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error('useTheme must be used inside ThemeProvider');
   return context;
