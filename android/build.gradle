@@ -6,12 +6,16 @@ buildscript {
         targetSdkVersion = 35
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.1.20"
+        androidXAnnotation = "1.8.2"
+        androidXBrowser = "1.8.0"
     }
     repositories {
+        maven { url = uri("https://plugins.gradle.org/m2") }
         google()
         mavenCentral()
     }
     dependencies {
+        classpath("com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:11.6.3")
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")

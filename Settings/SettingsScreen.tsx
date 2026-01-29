@@ -1,11 +1,23 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Linking, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn';
+import { ReactNativeLegal } from 'react-native-legal';
+import { useApi } from '../Api/ApiContextProvider';
+import { getUserInfo, UserInfo } from '../Api/UserApi';
 import { useAppEnvironment } from '../AppEnvironment';
 import { logout } from '../Auth/Authentication';
 
 function SettingsScreen() {
   const { environment } = useAppEnvironment();
+  const api = useApi();
+
+  const [user, setUser] = useState<UserInfo | null | undefined>(undefined);
+
+  const makeAWishUrl = "https://docs.google.com/forms/d/e/1FAIpQLSelERsYq3" +
+                        "gLmHbWvVCWha5iCU8z3r9VYC0hCN4ArLpMAiysaQ/viewform?entry.1338203640=MyRoboJackets%20" +
+                        (Platform.OS === "android" ? "Android" : "iOS");
+
   type SettingsMenuLinkProps = {
     icon: React.ComponentProps<typeof MaterialIcons>['name'];
     title: string;
@@ -38,22 +50,62 @@ function SettingsScreen() {
     </View>
   );
 
+  async function openLink(url: string) {
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        await InAppBrowser.open(url, {
+          // iOS Properties
+          dismissButtonStyle: 'cancel',
+          // preferredBarTintColor: '#453AA4',
+          // preferredControlTintColor: 'white',
+          readerMode: false,
+          animated: true,
+          modalPresentationStyle: 'fullScreen',
+          modalTransitionStyle: 'coverVertical',
+          modalEnabled: true,
+          enableBarCollapsing: false,
+          // Android Properties
+          showTitle: true,
+          // toolbarColor: '#6200EE',
+          // secondaryToolbarColor: 'black', // We may add color settings later using system theme
+          // navigationBarColor: 'black',
+          // navigationBarDividerColor: 'white',
+          enableUrlBarHiding: true,
+          enableDefaultShare: true,
+          forceCloseOnRedirection: false,
+        });
+      } else Linking.openURL(url);
+    } catch (error) {
+      if (error instanceof Error) console.log(error.message);
+    }
+  }
+
+  async function onRefreshUser(forceRefresh: boolean = false) {
+    if (!user || forceRefresh) {
+      setUser(await getUserInfo(api));
+    }
+  }
+
+  useEffect(() => {
+    onRefreshUser(true);
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <SettingsHeader title="Account" />
         <SettingsMenuLink
           icon="person"
-          title="Refreshing data..."
-          subtitle="Username"
-          onClick={() => {}}
+          title={user && user.name ? user.name : "Refreshing data..."}
+          subtitle={user && user.uid ? user.uid : "Username"}
+          onClick={() => {onRefreshUser()}}
         />
         {__DEV__ && ( // checks if app is running locally
           <>
             <SettingsMenuLink
               icon="verified-user"
               title="DEBUG: Recognized permissions"
-              subtitle="None"
+              subtitle={user && user.allPermissions ? user.allPermissions.join(", ") : "None"}
               onClick={() => {}}
             />
             <SettingsMenuLink
@@ -81,7 +133,12 @@ function SettingsScreen() {
           }}
         />
         <SettingsHeader title="About" />
-        <SettingsMenuLink icon="home" title="Server" subtitle="[Server]" onClick={() => {}} />
+        <SettingsMenuLink
+          icon="home" 
+          title="Server" 
+          subtitle={environment.name + " " + environment.baseUrl} 
+          onClick={() => {}} 
+        />
         <SettingsMenuLink icon="build" title="Version" subtitle="1.5.4" onClick={() => {}} />
         <SettingsMenuLink
           icon="update"
@@ -89,9 +146,21 @@ function SettingsScreen() {
           subtitle="Not available"
           onClick={() => {}}
         />
-        <SettingsMenuLink icon="feedback" title="Make a wish" onClick={() => {}} />
-        <SettingsMenuLink icon="privacy-tip" title="Privacy policy" onClick={() => {}} />
-        <SettingsMenuLink icon="info" title="Open-source licenses" onClick={() => {}} />
+        <SettingsMenuLink 
+          icon="feedback" 
+          title="Make a wish" 
+          onClick={async () => {await openLink(makeAWishUrl)}} 
+        />
+        <SettingsMenuLink
+          icon="privacy-tip" 
+          title="Privacy policy" 
+          onClick={async () => {await openLink(environment.baseUrl + "/privacy")}} 
+        />
+        <SettingsMenuLink 
+          icon="info" 
+          title="Open-source licenses" 
+          onClick={() => {ReactNativeLegal.launchLicenseListScreen('OSS Notice');}} 
+        />
         <MadeWithLove />
       </ScrollView>
     </SafeAreaView>

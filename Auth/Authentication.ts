@@ -147,8 +147,8 @@ export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
 export async function refreshAuth(currentEnvironment: AppEnvironment) {
   if (!(await refreshTokenIsValid(currentEnvironment))) {
     setAuthenticationState(
-      AuthenticationState.ERROR, 
-      'Failed to refresh authentication due to invalid tokens. Please log in again. If the issue persists, contact #it-helpdesk.'
+      AuthenticationState.UNAUTHENTICATED, 
+      null
     );
     return false;
   }
@@ -157,8 +157,8 @@ export async function refreshAuth(currentEnvironment: AppEnvironment) {
   );
   if (!refreshToken) {
     setAuthenticationState(
-      AuthenticationState.ERROR,
-      'Failed to refresh authentication because no refresh token was found. Please log in again. If the issue persists, contact #it-helpdesk.'
+      AuthenticationState.UNAUTHENTICATED,
+      null
     );
     return false;
   }

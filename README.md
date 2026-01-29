@@ -30,6 +30,9 @@ npm run android
 
 # OR using Yarn
 yarn android
+
+# OR using npx
+npx react-native run-android
 ```
 
 ### iOS
@@ -46,6 +49,11 @@ Then, and every time you update your native dependencies, run:
 
 ```sh
 bundle exec pod install
+
+# OR manually
+cd ios
+pod install
+cd ..
 ```
 
 For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
@@ -56,8 +64,26 @@ npm run ios
 
 # OR using Yarn
 yarn ios
+
+# OR using npx
+npx react-native run-android
 ```
 
 If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
 
 This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+
+
+# Legal
+
+This project is open-source and is supported by many open-source libraries.
+The app includes a notice of these dependencies which must be updated when a
+library is added. Run the below command whenever adding a dependency to update
+the OSS notice:
+
+```sh
+npx react-native legal-generate
+
+# OR with yarn
+yarn react-native legal-generate
+```

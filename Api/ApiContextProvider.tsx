@@ -24,8 +24,12 @@ function createApiContext(environment: AppEnvironment) {
 
     instance.interceptors.request.use(async (config) => {
         const token = await getAuthToken(environment);
-        if (token)
+        console.log(config.baseURL);
+        if (token) {
             config.headers.Authorization = `Bearer ${token}`;
+            console.log(config.headers.Authorization);
+        }
+
         return config;
     });
 
@@ -37,7 +41,7 @@ function createApiContext(environment: AppEnvironment) {
                 if (!await refreshAuth(environment)) return Promise.reject(error);
                 const token = await getAuthToken(environment);
                 if (token) {
-                    error.config.headers.Authorization = `Bearer ${token}`;
+                    error.config.headers.Authorization = `Bearer ${token.password}`;
                     return axios.request(error.config);
                 }
             }
