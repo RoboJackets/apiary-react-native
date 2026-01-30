@@ -7,12 +7,14 @@ import { AuthenticationState } from '../Auth/Authentication';
 import AuthenticationScreen from '../Auth/AuthenticationScreen';
 import LoadingScreen from '../Components/LoadingScreen';
 import NfcEnabledScreen from '../Nfc/NfcEnabledScreen';
+import { useTheme } from '../Themes/ThemeContextProvider';
 import NavBar from './NavBar';
 
 const Stack = createNativeStackNavigator();
 type NfcState = 'enabled' | 'disabled' | 'unsupported';
 
 function RootStack() {
+  const { currentTheme, setTheme } = useTheme();
   const auth = useContext(AuthContext);
   const [nfcEnabled, setNfcEnabled] = useState<NfcState>('disabled');
 
@@ -46,7 +48,7 @@ function RootStack() {
         headerShown: true,
         title: 'MyRoboJackets',
         headerStyle: {
-          backgroundColor: '#EEB211',
+          backgroundColor: currentTheme.primary as string,
         },
         headerTitleStyle: {
           fontWeight: 'bold',
