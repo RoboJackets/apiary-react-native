@@ -14,7 +14,7 @@ const Stack = createNativeStackNavigator();
 type NfcState = 'enabled' | 'disabled' | 'unsupported';
 
 function RootStack() {
-  const { currentTheme, setTheme } = useTheme();
+  const { currentTheme } = useTheme();
   const auth = useContext(AuthContext);
   const [nfcEnabled, setNfcEnabled] = useState<NfcState>('disabled');
 
