@@ -18,48 +18,44 @@ export const ApiContext = createContext<AxiosInstance | undefined>(undefined);
  * @returns AxiosInstance for the API context.
  */
 function createApiContext(environment: AppEnvironment) {
-    const instance = axios.create({
-        baseURL: environment.baseUrl,
-    });
+  const instance = axios.create({
+    baseURL: environment.baseUrl,
+  });
 
-    instance.interceptors.request.use(async (config) => {
+  instance.interceptors.request.use(async (config) => {
+    const token = await getAuthToken(environment);
+    console.log(config.baseURL);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log(config.headers.Authorization);
+    }
+
+    return config;
+  });
+
+  instance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        if (!error.config) return Promise.reject(error);
+        if (!(await refreshAuth(environment))) return Promise.reject(error);
         const token = await getAuthToken(environment);
-        console.log(config.baseURL);
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-            console.log(config.headers.Authorization);
+          error.config.headers.Authorization = `Bearer ${token.password}`;
+          return axios.request(error.config);
         }
-
-        return config;
-    });
-
-    instance.interceptors.response.use(
-        (response) => response,
-        async (error) => {
-            if (axios.isAxiosError(error) && error.response?.status === 401) {
-                if (!error.config) return Promise.reject(error);
-                if (!await refreshAuth(environment)) return Promise.reject(error);
-                const token = await getAuthToken(environment);
-                if (token) {
-                    error.config.headers.Authorization = `Bearer ${token.password}`;
-                    return axios.request(error.config);
-                }
-            }
-            return Promise.reject(error);
-        }
-    );
-    return instance;
+      }
+      return Promise.reject(error);
+    },
+  );
+  return instance;
 }
 
-function ApiContextProvider({ children }: {children: ReactNode}) {
+function ApiContextProvider({ children }: { children: ReactNode }) {
   const { environment } = useAppEnvironment();
   const apiContext = createApiContext(environment);
 
-  return (
-    <ApiContext.Provider value={apiContext}>
-      {children}
-    </ApiContext.Provider>
-  );
+  return <ApiContext.Provider value={apiContext}>{children}</ApiContext.Provider>;
 }
 
 export function useApi() {

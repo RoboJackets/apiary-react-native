@@ -146,20 +146,14 @@ export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
  */
 export async function refreshAuth(currentEnvironment: AppEnvironment) {
   if (!(await refreshTokenIsValid(currentEnvironment))) {
-    setAuthenticationState(
-      AuthenticationState.UNAUTHENTICATED, 
-      null
-    );
+    setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
     return false;
   }
   const refreshToken = await Keychain.getInternetCredentials(
     currentEnvironment.baseUrl + ':refreshToken',
   );
   if (!refreshToken) {
-    setAuthenticationState(
-      AuthenticationState.UNAUTHENTICATED,
-      null
-    );
+    setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
     return false;
   }
   const conf = await config(currentEnvironment);

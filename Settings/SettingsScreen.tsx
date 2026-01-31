@@ -1,6 +1,15 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React, { useEffect, useState } from 'react';
-import { Linking, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Linking,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn';
 import { ReactNativeLegal } from 'react-native-legal';
 import { useApi } from '../Api/ApiContextProvider';
@@ -14,9 +23,10 @@ function SettingsScreen() {
 
   const [user, setUser] = useState<UserInfo | null | undefined>(undefined);
 
-  const makeAWishUrl = "https://docs.google.com/forms/d/e/1FAIpQLSelERsYq3" +
-                        "gLmHbWvVCWha5iCU8z3r9VYC0hCN4ArLpMAiysaQ/viewform?entry.1338203640=MyRoboJackets%20" +
-                        (Platform.OS === "android" ? "Android" : "iOS");
+  const makeAWishUrl =
+    'https://docs.google.com/forms/d/e/1FAIpQLSelERsYq3' +
+    'gLmHbWvVCWha5iCU8z3r9VYC0hCN4ArLpMAiysaQ/viewform?entry.1338203640=MyRoboJackets%20' +
+    (Platform.OS === 'android' ? 'Android' : 'iOS');
 
   type SettingsMenuLinkProps = {
     icon: React.ComponentProps<typeof MaterialIcons>['name'];
@@ -96,16 +106,18 @@ function SettingsScreen() {
         <SettingsHeader title="Account" />
         <SettingsMenuLink
           icon="person"
-          title={user && user.name ? user.name : "Refreshing data..."}
-          subtitle={user && user.uid ? user.uid : "Username"}
-          onClick={() => {onRefreshUser()}}
+          title={user && user.name ? user.name : 'Refreshing data...'}
+          subtitle={user && user.uid ? user.uid : 'Username'}
+          onClick={() => {
+            onRefreshUser();
+          }}
         />
         {__DEV__ && ( // checks if app is running locally
           <>
             <SettingsMenuLink
               icon="verified-user"
               title="DEBUG: Recognized permissions"
-              subtitle={user && user.allPermissions ? user.allPermissions.join(", ") : "None"}
+              subtitle={user && user.allPermissions ? user.allPermissions.join(', ') : 'None'}
               onClick={() => {}}
             />
             <SettingsMenuLink
@@ -134,10 +146,10 @@ function SettingsScreen() {
         />
         <SettingsHeader title="About" />
         <SettingsMenuLink
-          icon="home" 
-          title="Server" 
-          subtitle={environment.name + " " + environment.baseUrl} 
-          onClick={() => {}} 
+          icon="home"
+          title="Server"
+          subtitle={environment.name + ' ' + environment.baseUrl}
+          onClick={() => {}}
         />
         <SettingsMenuLink icon="build" title="Version" subtitle="1.5.4" onClick={() => {}} />
         <SettingsMenuLink
@@ -146,20 +158,26 @@ function SettingsScreen() {
           subtitle="Not available"
           onClick={() => {}}
         />
-        <SettingsMenuLink 
-          icon="feedback" 
-          title="Make a wish" 
-          onClick={async () => {await openLink(makeAWishUrl)}} 
+        <SettingsMenuLink
+          icon="feedback"
+          title="Make a wish"
+          onClick={async () => {
+            await openLink(makeAWishUrl);
+          }}
         />
         <SettingsMenuLink
-          icon="privacy-tip" 
-          title="Privacy policy" 
-          onClick={async () => {await openLink(environment.baseUrl + "/privacy")}} 
+          icon="privacy-tip"
+          title="Privacy policy"
+          onClick={async () => {
+            await openLink(environment.baseUrl + '/privacy');
+          }}
         />
-        <SettingsMenuLink 
-          icon="info" 
-          title="Open-source licenses" 
-          onClick={() => {ReactNativeLegal.launchLicenseListScreen('OSS Notice');}} 
+        <SettingsMenuLink
+          icon="info"
+          title="Open-source licenses"
+          onClick={() => {
+            ReactNativeLegal.launchLicenseListScreen('OSS Notice');
+          }}
         />
         <MadeWithLove />
       </ScrollView>
