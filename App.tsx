@@ -1,5 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
-import React, { createContext } from 'react';
+import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ApiContextProvider from './Api/ApiContextProvider';
 import { AppEnvironmentProvider } from './AppEnvironment';
