@@ -1,7 +1,7 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React, { useState } from 'react';
 import { Button, Modal, StyleSheet, Text, View } from 'react-native';
-import { Colors } from '../Themes/Colors';
+import { useTheme } from '../Themes/ThemeContextProvider';
 
 type InsufficientPermissionsProps = {
   featureName: string;
@@ -16,6 +16,7 @@ function InsufficientPermissions({
   missingPermissions,
   requiredPermissions,
 }: InsufficientPermissionsProps) {
+  const { currentTheme } = useTheme();
   const [detailsVisible, setDetailsVisible] = useState(false);
   const satisfiedPermissions = requiredPermissions.filter(
     (item) => !missingPermissions.includes(item),
@@ -32,14 +33,14 @@ function InsufficientPermissions({
           <MaterialIcons
             name={'check-circle-outline'}
             size={30}
-            color={Colors.success}
+            color={currentTheme.success}
             style={styles.icon}
           />
         ) : (
           <MaterialIcons
             name={'error-outline'}
             size={30}
-            color={Colors.danger}
+            color={currentTheme.error}
             style={styles.icon}
           />
         )}
@@ -68,14 +69,19 @@ function InsufficientPermissions({
   return (
     <View style={styles.viewContainer}>
       {detailsVisible && <PermissionDetailsDialog></PermissionDetailsDialog>}
-      <MaterialIcons name={'error-outline'} size={100} color={Colors.danger} style={styles.icon} />
+      <MaterialIcons
+        name={'error-outline'}
+        size={100}
+        color={currentTheme.error}
+        style={styles.icon}
+      />
       <Text style={styles.mainText}>{featureName} permissions required</Text>
       <View style={styles.buttonTopRow}>
         <View style={styles.button}>
           <Button onPress={() => {}} title="Go to #it-helpdesk" />
         </View>
         <View style={styles.button}>
-          <Button onPress={onRetry} color={Colors.Gold} title="Retry" />
+          <Button onPress={onRetry} color={currentTheme.primary} title="Retry" />
         </View>
       </View>
       <View style={styles.buttonBottomRow}>
