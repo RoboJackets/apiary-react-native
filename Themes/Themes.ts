@@ -36,6 +36,7 @@ export type Theme = {
   surfaceContainer: ColorValue;
   surfaceContainerHigh: ColorValue;
   surfaceContainerHighest: ColorValue;
+  success: ColorValue;
 };
 
 export const LightMode: Theme = {
@@ -74,6 +75,7 @@ export const LightMode: Theme = {
   surfaceContainer: Colors.surfaceContainerLight,
   surfaceContainerHigh: Colors.surfaceContainerHighLight,
   surfaceContainerHighest: Colors.surfaceContainerHighestLight,
+  success: Colors.success,
 };
 
 export const DarkMode: Theme = {
@@ -112,4 +114,5 @@ export const DarkMode: Theme = {
   surfaceContainer: Colors.surfaceContainerDark,
   surfaceContainerHigh: Colors.surfaceContainerHighDark,
   surfaceContainerHighest: Colors.surfaceContainerHighestDark,
+  success: Colors.success,
 };
