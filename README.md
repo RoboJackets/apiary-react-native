@@ -66,7 +66,7 @@ npm run ios
 yarn ios
 
 # OR using npx
-npx react-native run-android
+npx react-native run-ios
 ```
 
 If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
