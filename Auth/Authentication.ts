@@ -100,6 +100,19 @@ async function storeCredentials(
 }
 
 /**
+ * Gets the auth token from Keychain storage.
+ * @param currentEnvironment Current AppEnvironment.
+ * @returns Token if exists, null otherwise
+ */
+export async function getAuthToken(currentEnvironment: AppEnvironment) {
+  const token = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':accessToken');
+  if (!token) {
+    return null;
+  }
+  return token;
+}
+
+/**
  * Checks for existence of auth token and whether it is expired.
  * @returns whether auth token is currently valid.
  */
@@ -114,11 +127,8 @@ export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
     return false;
   }
 
-  const currentTime = Date.now();
-  if (currentTime > expiry) {
-    return true;
-  }
-  return false;
+  const currentTime = Math.floor(Date.now() / 1000);
+  return currentTime < expiry;
 }
 
 /**

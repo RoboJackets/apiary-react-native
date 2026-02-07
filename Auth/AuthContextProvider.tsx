@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { useAppEnvironment } from '../AppEnvironment';
 import {
   AuthenticationState,
@@ -49,6 +49,14 @@ function AuthContextProvider({ children }: AuthProviderProps) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthContextProvider');
+  }
+  return context;
 }
 
 export default AuthContextProvider;
