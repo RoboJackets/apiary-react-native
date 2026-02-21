@@ -11,9 +11,9 @@
 		5C459C5461A3C36082EDD29E /* libPods-ApiaryReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC12C96612BAEAFBD782AD2 /* libPods-ApiaryReactNative.a */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		CC2BBDBCA3FCEC106879F825 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
-		D933ACBE1A32493585C40AB5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 99816AA8F2524708B7736B43 /* Settings.bundle */; };
 		C283F23446184CAE84A086C3 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D50820E7EEE04D94B92AAA75 /* Settings.bundle */; };
+		CC2BBDBCA3FCEC106879F825 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		D933ACBE1A32493585C40AB5 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,9 +27,9 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ApiaryReactNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		90944F4E2E2B4DF7009CD759 /* ApiaryReactNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ApiaryReactNative.entitlements; path = ApiaryReactNative/ApiaryReactNative.entitlements; sourceTree = "<group>"; };
 		90999FF72EADD414005812BA /* AppDelegate+RNAppAuth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+RNAppAuth.h"; sourceTree = "<group>"; };
+		D50820E7EEE04D94B92AAA75 /* Settings.bundle */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = Settings.bundle; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EDC4D08DC6F936D979DF2673 /* Pods-ApiaryReactNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ApiaryReactNative.debug.xcconfig"; path = "Target Support Files/Pods-ApiaryReactNative/Pods-ApiaryReactNative.debug.xcconfig"; sourceTree = "<group>"; };
-		D50820E7EEE04D94B92AAA75 /* Settings.bundle */ = {isa = PBXFileReference; name = "Settings.bundle"; path = "Settings.bundle"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.plug-in; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -184,7 +184,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				CC2BBDBCA3FCEC106879F825 /* PrivacyInfo.xcprivacy in Resources */,
-				D933ACBE1A32493585C40AB5 /* Settings.bundle in Resources */,
+				D933ACBE1A32493585C40AB5 /* BuildFile in Resources */,
 				C283F23446184CAE84A086C3 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
