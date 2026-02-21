@@ -30,7 +30,7 @@ export function ItemList<T>({
       {callout}
 
       {items.length === 0 ? (
-        empty ?? null
+        (empty ?? null)
       ) : (
         <FlatList
           data={items}
@@ -39,10 +39,7 @@ export function ItemList<T>({
             <View>
               {preItem?.(index)}
 
-              <Pressable
-                onPress={() => onItemSelected(item)}
-                style={styles.listItem}
-              >
+              <Pressable onPress={() => onItemSelected(item)} style={styles.listItem}>
                 {itemContent(item)}
               </Pressable>
 
@@ -60,8 +57,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listItem: {
-    padding: 16,
     borderBottomWidth: 1,
     borderColor: '#ddd',
+    padding: 16,
   },
 });
