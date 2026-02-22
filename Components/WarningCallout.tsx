@@ -6,49 +6,48 @@ import { useTheme } from '../Themes/ThemeContextProvider';
 import Callout from './Callout';
 
 type WarningCalloutProps = {
-    titleText: string;
-    body: React.ReactNode;
-    padding?: number;
+  titleText: string;
+  body: React.ReactNode;
+  padding?: number;
 };
 
 function WarningCallout(props: WarningCalloutProps) {
-    const {currentTheme} = useTheme();
+  const { currentTheme } = useTheme();
 
-    const backgroundColor = currentTheme.warningSubtle;
-    const borderColor = Colors.warningLightMuted;
+  const backgroundColor = currentTheme.warningSubtle;
+  const borderColor = Colors.warningLightMuted;
 
-    return (
-        <Callout
-          title={
-            <View style={styles.header}>
-                <MaterialDesignIcons
-                    name="alert-circle-outline"
-                    color={currentTheme.onSurface}
-                    size={24}
-                    />
-                <Text style={styles.title}>{props.titleText}</Text>
-            </View>
-          }
-          backgroundColor={backgroundColor}
-          borderColor={borderColor}
-          padding={props.padding}
-          >
-            {props.body}
-          </Callout>
-    );
-
+  return (
+    <Callout
+      title={
+        <View style={styles.header}>
+          <MaterialDesignIcons
+            name="alert-circle-outline"
+            color={currentTheme.onSurface}
+            size={24}
+          />
+          <Text style={styles.title}>{props.titleText}</Text>
+        </View>
+      }
+      backgroundColor={backgroundColor}
+      borderColor={borderColor}
+      padding={props.padding}
+    >
+      {props.body}
+    </Callout>
+  );
 }
 
 export default WarningCallout;
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   title: {
-    marginLeft: 8,
-    fontSize: 18,      // ≈ titleLarge
+    fontSize: 18,
     fontWeight: '600',
+    marginLeft: 8,
   },
 });
