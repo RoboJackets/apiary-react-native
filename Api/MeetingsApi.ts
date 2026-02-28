@@ -10,7 +10,7 @@ export type TeamInfo<T extends object = NonNullable<unknown>> = {
   description: string;
   mailing_list_name: string | null;
   slack_channel_id: string;
-  slack_channel_name: string; 
+  slack_channel_name: string;
   slack_private_channel_id: string;
   google_group: string;
   created_at: string;
@@ -71,24 +71,24 @@ export async function getEventInfo(api: AxiosInstance): Promise<EventInfo[] | nu
 }
 
 export async function postAttendance(
-  api: AxiosInstance, 
-  props: AttendanceInfo
+  api: AxiosInstance,
+  props: AttendanceInfo,
 ): Promise<{ success: true; data: AttendanceResponse } | { success: false; error: string }> {
   try {
-    console.log("Posting ", props);
+    console.log('Posting ', props);
     const response = await api.post('/api/v1/attendance?include=attendee', props);
     console.log('Attendance response:', response.data);
-    
-    return { 
-      success: true, 
-      data: response.data 
+
+    return {
+      success: true,
+      data: response.data,
     };
   } catch (error) {
     //TODO: incorporate logging
     console.error(error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }

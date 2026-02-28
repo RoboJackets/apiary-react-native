@@ -10,21 +10,16 @@ type ActionPromptProps = {
   subtitle2?: string;
 };
 
-export const ActionPrompt = (props : ActionPromptProps) => {
+export const ActionPrompt = (props: ActionPromptProps) => {
   return (
     <View style={styles.viewContainer}>
-      <MaterialIcons
-        name={props.icon}
-        size={100}
-        style={styles.icon}
-        color={props.color}
-      />
+      <MaterialIcons name={props.icon} size={100} style={styles.icon} color={props.color} />
       <Text style={styles.mainText}>{props.title}</Text>
       {props.subtitle && <Text style={styles.subText}>{props.subtitle}</Text>}
       {props.subtitle2 && <Text style={styles.subText}>{props.subtitle2}</Text>}
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   icon: {

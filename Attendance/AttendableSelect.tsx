@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet
-} from 'react-native';
+import { Button, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { useApi } from '../Api/ApiContextProvider';
 import { EventInfo, getEventInfo, getTeamInfo, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType } from '../Api/Models/Attendance';
@@ -18,9 +13,11 @@ type AttendanceProps = {
   setAttendanceType: (state: AttendableType) => void;
 };
 
-function AttendableSelect({attendanceType, setAttendanceType} : AttendanceProps) {
+function AttendableSelect({ attendanceType, setAttendanceType }: AttendanceProps) {
   const api = useApi();
-  const [attendables, setAttendables] = useState<TeamInfo[] | EventInfo[] | null | undefined>(undefined);
+  const [attendables, setAttendables] = useState<TeamInfo[] | EventInfo[] | null | undefined>(
+    undefined,
+  );
   const [attendable, setAttendable] = useState<TeamInfo | EventInfo | undefined>(undefined);
 
   async function onRefreshAttendables(forceRefresh: boolean = false) {
@@ -37,36 +34,50 @@ function AttendableSelect({attendanceType, setAttendanceType} : AttendanceProps)
     onRefreshAttendables(true);
   }, []);
 
-  function AttendableList () {
+  function AttendableList() {
     if (attendables) {
       const attendableList = [];
       for (const attendable of attendables) {
         attendableList.push(
-          <MenuLink key={attendable.name} icon="people" title={attendable.name} onClick={() => {setAttendable(attendable)}}></MenuLink>
+          <MenuLink
+            key={attendable.name}
+            icon="people"
+            title={attendable.name}
+            onClick={() => {
+              setAttendable(attendable);
+            }}
+          ></MenuLink>,
         );
       }
       return attendableList;
     } else {
-      return (
-        <LoadingScreen></LoadingScreen>
-      )
+      return <LoadingScreen></LoadingScreen>;
     }
   }
 
   return (
     <>
-      {
-        attendable ? 
-        <TapABuzzCard attendanceType={attendanceType} setAttendanceType={setAttendanceType} attendable={attendable} setAttendable={setAttendable}></TapABuzzCard>
-        :
+      {attendable ? (
+        <TapABuzzCard
+          attendanceType={attendanceType}
+          setAttendanceType={setAttendanceType}
+          attendable={attendable}
+          setAttendable={setAttendable}
+        ></TapABuzzCard>
+      ) : (
         <SafeAreaView style={styles.container}>
           <ScrollView>
-            <Button title="Change team or event" onPress={() => {setAttendanceType(AttendableType.NONE)}}/>
-            <MenuHeader title={"What do you want to take attendance for?"}></MenuHeader>
+            <Button
+              title="Change team or event"
+              onPress={() => {
+                setAttendanceType(AttendableType.NONE);
+              }}
+            />
+            <MenuHeader title={'What do you want to take attendance for?'}></MenuHeader>
             <AttendableList></AttendableList>
           </ScrollView>
         </SafeAreaView>
-      }
+      )}
     </>
   );
 }
