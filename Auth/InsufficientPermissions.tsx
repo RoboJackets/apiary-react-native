@@ -1,13 +1,14 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React, { useState } from 'react';
 import { Button, Modal, StyleSheet, Text, View } from 'react-native';
+import { Permission } from '../Api/Models/Permission';
 import { useTheme } from '../Themes/ThemeContextProvider';
 
 type InsufficientPermissionsProps = {
   featureName: string;
   onRetry: () => void;
-  missingPermissions: string[];
-  requiredPermissions: string[];
+  missingPermissions: Permission[];
+  requiredPermissions: Permission[];
 };
 
 function InsufficientPermissions({

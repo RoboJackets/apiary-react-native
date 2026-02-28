@@ -52,7 +52,7 @@ const NfcScanModal: React.FC<NfcScanModalProps> = (props: NfcScanModalProps) => 
   }, [props]);
 
   return (
-    <Modal transparent visible={props.scanning && Platform.OS === 'android'} animationType="fade">
+    <Modal transparent visible={props.scanning && Platform.OS === 'ios'} animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.container}>
           <ActivityIndicator size="large" />
