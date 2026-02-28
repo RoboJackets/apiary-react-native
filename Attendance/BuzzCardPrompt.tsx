@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
-import { Button, Modal, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  Modal,
+  NativeModules,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import NfcManager, { NfcTech } from 'react-native-nfc-manager';
 import { useApi } from '../Api/ApiContextProvider';
 import { EventInfo, postAttendance, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType, NfcSource } from '../Api/Models/Attendance';
 import { ActionPrompt } from '../Components/ActionPrompt';
-import NfcScanModal from '../Nfc/NfcScanModal';
 import { useTheme } from '../Themes/ThemeContextProvider';
 import { LastAttendeeProps } from './TapABuzzCard';
 
@@ -42,13 +51,38 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
   const { currentTheme } = useTheme();
   const [buzzCardState, setBuzzCardState] = useState<BuzzCardState>('Ready');
   const [enterGTIDManually, setEnterGTIDManually] = useState<boolean>(false);
-  const [scanIos, setScanIos] = useState<boolean>(true);
+
+  useEffect(() => {
+    beginScan();
+  }, []);
+
+  const beginScan = async () => {
+    if (Platform.OS === 'ios') {
+      const { BuzzCardReader } = NativeModules;
+      BuzzCardReader.sendCommand(selectApp, readFile, handleNfcResult);
+    } else if (Platform.OS === 'android') {
+      try {
+        await NfcManager.start();
+        await NfcManager.requestTechnology(NfcTech.IsoDep);
+        await NfcManager.getTag();
+        await NfcManager.transceive(selectApp);
+        const result = await NfcManager.transceive(readFile);
+        handleNfcResult(null, result);
+      } catch (error: unknown) {
+        handleNfcResult(error instanceof Error ? error : new Error(String(error)), null);
+      } finally {
+        NfcManager.cancelTechnologyRequest();
+      }
+    } else {
+      console.log('Not a valid platform for NFC');
+      handleNfcResult(null, null);
+    }
+  };
 
   // Callback function for NfcScanModal
   const handleNfcResult = async (error: Error | null, result: number[] | null) => {
     if (error) {
       // TODO: Validate that error.message actually contains these formats
-      setScanIos(false); // closes modal so you can see the error
       switch (error.message) {
         case 'Wrong CLA':
           setBuzzCardState('NotABuzzCard');
@@ -68,6 +102,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
     if (!result) {
       // User cancelled
       setBuzzCardState('Ready');
+      beginScan();
       return;
     }
 
@@ -94,6 +129,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
 
       await onBuzzCardTap(gtidNumber, NfcSource.NFC);
       setBuzzCardState('Ready');
+      beginScan();
     } catch (error) {
       setBuzzCardState('InvalidBuzzCardData');
     }
@@ -125,8 +161,6 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
         id: gtid,
         name: attendeeName,
       });
-
-      setBuzzCardState('Ready');
     } catch (error) {
       setBuzzCardState('BadInternet');
     }
@@ -167,15 +201,6 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
 
   return (
     <View style={styles.container}>
-      {scanIos && (
-        <NfcScanModal
-          scanning={true}
-          appCmd={selectApp}
-          readCmd={readFile}
-          modalText="Tap a BuzzCard"
-          callback={handleNfcResult}
-        ></NfcScanModal>
-      )}
       {enterGTIDManually && <EnterGTIDForm></EnterGTIDForm>}
       <View>
         {buzzCardState === 'Ready' ? (
@@ -229,7 +254,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
             <View style={styles.modalButton}>
               <Button
                 onPress={() => {
-                  setScanIos(true);
+                  beginScan();
                 }}
                 color={currentTheme.primary}
                 title="Scan Card"
