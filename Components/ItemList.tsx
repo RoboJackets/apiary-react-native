@@ -13,37 +13,27 @@ type ItemListProps<T> = {
   itemContent: (item: T) => React.ReactNode;
 };
 
-export function ItemList<T>({
-  items,
-  onItemSelected,
-  title,
-  itemKey,
-  callout,
-  preItem,
-  postItem,
-  empty,
-  itemContent,
-}: ItemListProps<T>) {
+export function ItemList<T>(props: ItemListProps<T>) {
   return (
     <View style={styles.container}>
-      {title}
-      {callout}
+      {props.title}
+      {props.callout}
 
-      {items.length === 0 ? (
-        (empty ?? null)
+      {props.items.length === 0 ? (
+        (props.empty ?? null)
       ) : (
         <FlatList
-          data={items}
-          keyExtractor={itemKey}
+          data={props.items}
+          keyExtractor={props.itemKey}
           renderItem={({ item, index }) => (
             <View>
-              {preItem?.(index)}
+              {props.preItem?.(index)}
 
-              <Pressable onPress={() => onItemSelected(item)} style={styles.listItem}>
-                {itemContent(item)}
+              <Pressable onPress={() => props.onItemSelected(item)} style={styles.listItem}>
+                {props.itemContent(item)}
               </Pressable>
 
-              {postItem?.(index)}
+              {props.postItem?.(index)}
             </View>
           )}
         />
