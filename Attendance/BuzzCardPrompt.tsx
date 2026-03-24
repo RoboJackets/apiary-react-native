@@ -81,7 +81,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
 
   /**
    * Callback function for scan modal
-   * @param error 
+   * @param error
    * @param result Scanned GTID in char code format or null
    * @returns none
    */
@@ -136,7 +136,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
     } else {
       await onBuzzCardTap(gtidNumber, NfcSource.NFC);
     }
-    
+
     setBuzzCardState('Ready');
     if (!manual) beginScan();
   };
@@ -165,7 +165,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
       }
 
       if (lastGtidRef.current !== gtid) {
-        setTotalAttendees(prev => prev + 1);
+        setTotalAttendees((prev) => prev + 1);
         lastGtidRef.current = gtid;
       }
       const attendeeName = res.data.attendance.attendee?.name ?? 'Non-member';
