@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   Modal,
@@ -33,29 +33,29 @@ export type BuzzCardState =
 interface BuzzCardPromptProps {
   attendanceType: AttendableType;
   attendable: TeamInfo | EventInfo;
-  totalAttendees: number;
-  setTotalAttendees: (state: number) => void;
-  lastAttendee: LastAttendeeProps | null;
+  setTotalAttendees: React.Dispatch<React.SetStateAction<number>>; // accepts either number or function
   setLastAttendee: (state: LastAttendeeProps) => void;
 }
 
 const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
   attendanceType,
   attendable,
-  totalAttendees,
   setTotalAttendees,
-  lastAttendee,
   setLastAttendee,
 }) => {
   const api = useApi();
   const { currentTheme } = useTheme();
   const [buzzCardState, setBuzzCardState] = useState<BuzzCardState>('Ready');
   const [enterGTIDManually, setEnterGTIDManually] = useState<boolean>(false);
+  const lastGtidRef = useRef<number | null>(null); // keep track of last gtid to prevent duplicates
 
   useEffect(() => {
     beginScan();
   }, []);
 
+  /**
+   * Scanning function that is called to process buzzcard taps
+   */
   const beginScan = async () => {
     if (Platform.OS === 'ios') {
       const { BuzzCardReader } = NativeModules;
@@ -74,27 +74,26 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
         NfcManager.cancelTechnologyRequest();
       }
     } else {
-      console.log('Not a valid platform for NFC');
+      console.error('Not a valid platform for NFC');
       handleNfcResult(null, null);
     }
   };
 
-  // Callback function for NfcScanModal
+  /**
+   * Callback function for scan modal
+   * @param error 
+   * @param result Scanned GTID in char code format or null
+   * @returns none
+   */
   const handleNfcResult = async (error: Error | null, result: number[] | null) => {
     if (error) {
-      // TODO: Validate that error.message actually contains these formats
-      switch (error.message) {
-        case 'Wrong CLA':
-          setBuzzCardState('NotABuzzCard');
-          break;
-        case 'Tag was lost.':
-          setBuzzCardState('TagLost');
-          break;
-        case 'Incomplete response':
-          setBuzzCardState('TagLost');
-          break;
-        default:
-          setBuzzCardState('UnknownNfcError');
+      const errorMsg = error.message || '';
+      if (errorMsg.includes('Wrong CLA')) {
+        setBuzzCardState('NotABuzzCard');
+      } else if (errorMsg.includes('Tag was lost') || errorMsg.includes('Incomplete response')) {
+        setBuzzCardState('TagLost');
+      } else {
+        setBuzzCardState('UnknownNfcError');
       }
       return;
     }
@@ -108,33 +107,46 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
 
     const buzzString = String.fromCharCode(...result);
     const gtid = buzzString.substring(0, 9);
-    processGtid(gtid);
+    await processGtid(gtid, false);
   };
 
-  const processGtid = async (gtid: string) => {
-    try {
-      setEnterGTIDManually(false);
-      // Validate GTID format
-      if (!/^90[0-9]{7}$/.test(gtid)) {
-        setBuzzCardState('InvalidBuzzCardData');
-        return;
-      }
-
-      // Try to parse as integer (catches NumberFormatException equivalent)
-      const gtidNumber = parseInt(gtid, 10);
-      if (isNaN(gtidNumber)) {
-        setBuzzCardState('InvalidBuzzCardData');
-        return;
-      }
-
-      await onBuzzCardTap(gtidNumber, NfcSource.NFC);
-      setBuzzCardState('Ready');
-      beginScan();
-    } catch (error) {
+  /**
+   * Validates GTID format to use in POST request
+   * @param gtid String GTID to be formatted into number
+   * @param manual True if GTID was entered via modal, false if entered via NFC scan
+   * @returns none
+   */
+  const processGtid = async (gtid: string, manual: boolean) => {
+    setEnterGTIDManually(false); // closes the modal, not related to manual param
+    // Validate GTID format
+    if (!/^90[0-9]{7}$/.test(gtid)) {
       setBuzzCardState('InvalidBuzzCardData');
+      return;
     }
+
+    // Try to parse as integer (catches NumberFormatException equivalent)
+    const gtidNumber = parseInt(gtid, 10);
+    if (isNaN(gtidNumber)) {
+      setBuzzCardState('InvalidBuzzCardData');
+      return;
+    }
+
+    if (manual) {
+      await onBuzzCardTap(gtidNumber, NfcSource.KEYBOARD);
+    } else {
+      await onBuzzCardTap(gtidNumber, NfcSource.NFC);
+    }
+    
+    setBuzzCardState('Ready');
+    if (!manual) beginScan();
   };
 
+  /**
+   * Makes post request via Axios given GTID and NFC Source
+   * @param gtid Number GTID
+   * @param source Keyboard or NFC
+   * @returns none
+   */
   const onBuzzCardTap = async (gtid: number, source: NfcSource) => {
     setBuzzCardState('Processing');
 
@@ -152,10 +164,10 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
         return;
       }
 
-      if (!lastAttendee || lastAttendee.id !== gtid) {
-        setTotalAttendees(totalAttendees + 1);
+      if (lastGtidRef.current !== gtid) {
+        setTotalAttendees(prev => prev + 1);
+        lastGtidRef.current = gtid;
       }
-
       const attendeeName = res.data.attendance.attendee?.name ?? 'Non-member';
       setLastAttendee({
         id: gtid,
@@ -166,6 +178,10 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
     }
   };
 
+  /**
+   * GTID Modal
+   * @returns none
+   */
   const EnterGTIDForm = () => {
     const [gtid, setGtid] = useState('');
 
@@ -183,7 +199,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
             <View style={styles.modalButtonContainer}>
               <View style={styles.modalButton}>
                 <Button
-                  onPress={() => processGtid(gtid)}
+                  onPress={() => processGtid(gtid, true)}
                   color={currentTheme.primary}
                   title="Enter"
                 />

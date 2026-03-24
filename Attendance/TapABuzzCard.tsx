@@ -57,9 +57,7 @@ function TapABuzzCard({
       <TopPanel></TopPanel>
       <BuzzCardPrompt
         attendable={attendable}
-        totalAttendees={totalAttendees}
         setTotalAttendees={setTotalAttendees}
-        lastAttendee={lastAttendee}
         setLastAttendee={setLastAttendee}
         attendanceType={attendanceType}
       ></BuzzCardPrompt>

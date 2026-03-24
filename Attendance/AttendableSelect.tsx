@@ -40,7 +40,7 @@ function AttendableSelect({ attendanceType, setAttendanceType }: AttendanceProps
       for (const attendable of attendables) {
         attendableList.push(
           <MenuLink
-            key={attendable.name}
+            key={attendable.id}
             icon="people"
             title={attendable.name}
             onClick={() => {
