@@ -37,7 +37,6 @@ export type AttendanceInfo<T extends object = NonNullable<unknown>> = {
   source: string;
 } & T;
 
-// TODO: Fill this in with proper attendance response params
 export type AttendanceResponse = {
   attendance: {
     attendee?: {
@@ -75,9 +74,7 @@ export async function postAttendance(
   props: AttendanceInfo,
 ): Promise<{ success: true; data: AttendanceResponse } | { success: false; error: string }> {
   try {
-    console.log('Posting ', props);
     const response = await api.post('/api/v1/attendance?include=attendee', props);
-    console.log('Attendance response:', response.data);
 
     return {
       success: true,

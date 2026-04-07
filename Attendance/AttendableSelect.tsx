@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { useApi } from '../Api/ApiContextProvider';
 import { EventInfo, getEventInfo, getTeamInfo, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType } from '../Api/Models/Attendance';
 import LoadingScreen from '../Components/LoadingScreen';
 import MenuHeader from '../Components/MenuHeader';
 import MenuLink from '../Components/MenuLink';
+import RoundedButton from '../Components/RoundedButton';
 import TapABuzzCard from './TapABuzzCard';
 
 type AttendanceProps = {
@@ -67,13 +68,13 @@ function AttendableSelect({ attendanceType, setAttendanceType }: AttendanceProps
       ) : (
         <SafeAreaView style={styles.container}>
           <ScrollView>
-            <Button
+            <RoundedButton
               title="Change team or event"
               onPress={() => {
                 setAttendanceType(AttendableType.NONE);
               }}
             />
-            <MenuHeader title={'What do you want to take attendance for?'}></MenuHeader>
+            <MenuHeader title={`Select a ${attendanceType}`}></MenuHeader>
             <AttendableList></AttendableList>
           </ScrollView>
         </SafeAreaView>

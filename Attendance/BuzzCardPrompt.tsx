@@ -1,19 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Button,
-  Modal,
-  NativeModules,
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Modal, NativeModules, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import NfcManager, { NfcTech } from 'react-native-nfc-manager';
 import { useApi } from '../Api/ApiContextProvider';
 import { EventInfo, postAttendance, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType, NfcSource } from '../Api/Models/Attendance';
 import { ActionPrompt } from '../Components/ActionPrompt';
+import RoundedButton from '../Components/RoundedButton';
 import { useTheme } from '../Themes/ThemeContextProvider';
 import { LastAttendeeProps } from './TapABuzzCard';
 
@@ -189,7 +181,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
       <Modal animationType="fade" transparent={true}>
         <View style={styles.viewContainer}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Type the entire 9-digit GTID, starting with 90</Text>
+            <Text style={styles.modalText}>Type the entire 9-digit GTID, starting with 90.</Text>
             <TextInput
               style={styles.modalInput}
               placeholder="90..."
@@ -198,15 +190,16 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
             ></TextInput>
             <View style={styles.modalButtonContainer}>
               <View style={styles.modalButton}>
-                <Button
+                <RoundedButton
                   onPress={() => processGtid(gtid, true)}
-                  color={currentTheme.primary}
                   title="Enter"
+                  color={currentTheme.primary as string}
+                  textColor="#000000"
                 />
               </View>
 
               <View style={styles.modalButton}>
-                <Button onPress={() => setEnterGTIDManually(false)} title="Close" />
+                <RoundedButton onPress={() => setEnterGTIDManually(false)} title="Close" />
               </View>
             </View>
           </View>
@@ -268,17 +261,18 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
         <View style={styles.modalButtonContainer}>
           {Platform.OS === 'ios' && ( // only relevant to ios, after modal closed to display error
             <View style={styles.modalButton}>
-              <Button
+              <RoundedButton
                 onPress={() => {
                   beginScan();
                 }}
-                color={currentTheme.primary}
                 title="Scan Card"
+                color={currentTheme.primary as string}
+                textColor="#000000"
               />
             </View>
           )}
           <View style={styles.modalButton}>
-            <Button
+            <RoundedButton
               onPress={() => {
                 setEnterGTIDManually(true);
               }}
@@ -315,6 +309,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 20,
     marginVertical: 20,
+    textAlign: 'center',
   },
   modalView: {
     backgroundColor: 'white',

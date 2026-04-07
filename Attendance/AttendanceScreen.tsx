@@ -27,11 +27,6 @@ function AttendanceScreen() {
     }
   }
 
-  useEffect(() => {
-    onRefreshUser(true);
-    getPermissions();
-  }, []);
-
   function getPermissions() {
     let missingPermissions: Permission[] = [];
     if (user && user.allPermissions) {
@@ -40,6 +35,11 @@ function AttendanceScreen() {
     }
     setMissingPermissions(missingPermissions);
   }
+
+  useEffect(() => {
+    onRefreshUser(true);
+    getPermissions();
+  }, []);
 
   function AttendableSelectionScreen() {
     const [attendanceType, setAttendanceType] = useState<AttendableType>(AttendableType.NONE);

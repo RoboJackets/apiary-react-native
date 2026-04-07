@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { EventInfo, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType } from '../Api/Models/Attendance';
 import MenuHeader from '../Components/MenuHeader';
+import RoundedButton from '../Components/RoundedButton';
 import BuzzCardPrompt from './BuzzCardPrompt';
 
 type AttendanceProps = {
@@ -38,13 +39,13 @@ function TapABuzzCard({
   function TopPanel() {
     return (
       <View>
-        <Button
+        <RoundedButton
           title="Change team or event"
           onPress={() => {
             setAttendable(undefined);
             setAttendanceType(AttendableType.NONE);
           }}
-        ></Button>
+        />
         <MenuHeader title={`Recording attendance for ${attendable.name}`}></MenuHeader>
         <Text style={styles.topPanelText}>Last attendee: {lastAttendee?.name || 'None'}</Text>
       </View>
@@ -53,7 +54,6 @@ function TapABuzzCard({
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* {enterGTID && <EnterGTIDForm></EnterGTIDForm>} */}
       <TopPanel></TopPanel>
       <BuzzCardPrompt
         attendable={attendable}
