@@ -2,12 +2,15 @@ import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React, { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import nfcManager from 'react-native-nfc-manager';
+import ThemedText from '../Components/ThemedText';
+import { useTheme } from '../Themes/ThemeContextProvider';
 
 type NfcEnabledProps = {
   nfcEnabled: string;
 };
 
 function NfcEnabledScreen({ nfcEnabled }: NfcEnabledProps) {
+  const { currentTheme } = useTheme();
   const [restart, setRestart] = useState(false);
 
   const enableNfc = async () => {
@@ -19,40 +22,52 @@ function NfcEnabledScreen({ nfcEnabled }: NfcEnabledProps) {
   return (
     <>
       {nfcEnabled === 'unsupported' ? (
-        <View style={styles.view}>
+        <View style={[styles.view, { backgroundColor: currentTheme.background }]}>
           <MaterialIcons
             name={'error-outline'}
             size={100}
-            color="#b00020"
+            color={currentTheme.error}
             style={styles.errorIcon}
           />
-          <Text style={styles.headerText}>NFC is unsupported</Text>
-          <Text style={styles.bodyText}>NFC capability is unsupported on this device.</Text>
+          <ThemedText style={styles.headerText}>
+            <Text>NFC is unsupported</Text>
+          </ThemedText>
+          <ThemedText style={styles.bodyText}>
+            <Text>NFC capability is unsupported on this device.</Text>
+          </ThemedText>
         </View>
       ) : !restart ? (
-        <View style={styles.view}>
+        <View style={[styles.view, { backgroundColor: currentTheme.background }]}>
           <MaterialIcons
             name={'error-outline'}
             size={100}
-            color="#b00020"
+            color={currentTheme.error}
             style={styles.errorIcon}
           />
-          <Text style={styles.headerText}>NFC is disabled</Text>
-          <Text style={styles.bodyText}>Please enable NFC and restart the app to continue</Text>
+          <ThemedText style={styles.headerText}>
+            <Text>NFC is disabled</Text>
+          </ThemedText>
+          <ThemedText style={styles.bodyText}>
+            <Text>Please enable NFC and restart the app to continue</Text>
+          </ThemedText>
           <Button onPress={enableNfc} color="#EEB211" title="Enable NFC" />
         </View>
       ) : (
-        <View style={styles.view}>
+        <View style={[styles.view, { backgroundColor: currentTheme.background }]}>
           <MaterialIcons
             name={'error-outline'}
             size={100}
-            color="#B78300"
+            color={currentTheme.secondary}
             style={styles.errorIcon}
           />
-          <Text style={styles.headerText}>Restart to continue</Text>
-          <Text style={styles.bodyText}>
-            {`If you've enabled NFC, just restart the app and you'll be on your way!`}
-          </Text>
+          <ThemedText style={styles.headerText}>
+            <Text>Restart to continue</Text>
+          </ThemedText>
+          <ThemedText style={styles.bodyText}>
+            <Text>
+              If you&apos;ve enabled NFC, just restart the app and you&apos;ll be on your way!
+            </Text>
+          </ThemedText>
         </View>
       )}
     </>
@@ -75,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    margin: 10,
+    padding: 10,
   },
 });
 
