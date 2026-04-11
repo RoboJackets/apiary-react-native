@@ -11,6 +11,7 @@ type ItemListProps<T> = {
   postItem?: (index: number) => React.ReactNode;
   empty?: React.ReactNode;
   itemContent: (item: T) => React.ReactNode;
+  separator?: React.ReactNode;
 };
 
 export function ItemList<T>(props: ItemListProps<T>) {
@@ -25,6 +26,9 @@ export function ItemList<T>(props: ItemListProps<T>) {
         <FlatList
           data={props.items}
           keyExtractor={props.itemKey}
+          ItemSeparatorComponent={() => (
+            <View>{props.separator ?? <View style={styles.separator} />}</View>
+          )}
           renderItem={({ item, index }) => (
             <View>
               {props.preItem?.(index)}
@@ -47,8 +51,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listItem: {
-    borderBottomWidth: 1,
     borderColor: '#ddd',
     padding: 16,
+  },
+
+  separator: {
+    // Default styles, which can be overridden by props
+    backgroundColor: '#ccc', // Default color (light gray)
+    height: StyleSheet.hairlineWidth + 2, // Determines the thickness of the line
+    marginVertical: 5, // Adds some space above and below the line
+    width: '100%', // Makes the line span the full width
   },
 });
