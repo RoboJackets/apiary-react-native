@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { EventInfo, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType } from '../Api/Models/Attendance';
 import MenuHeader from '../Components/MenuHeader';
 import RoundedButton from '../Components/RoundedButton';
+import ThemedText from '../Components/ThemedText';
 import BuzzCardPrompt from './BuzzCardPrompt';
 
 type AttendanceProps = {
@@ -47,13 +48,15 @@ function TapABuzzCard({
           }}
         />
         <MenuHeader title={`Recording attendance for ${attendable.name}`}></MenuHeader>
-        <Text style={styles.topPanelText}>Last attendee: {lastAttendee?.name || 'None'}</Text>
+        <ThemedText style={styles.topPanelText}>
+          <Text>Last attendee: {lastAttendee?.name || 'None'}</Text>
+        </ThemedText>
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <>
       <TopPanel></TopPanel>
       <BuzzCardPrompt
         attendable={attendable}
@@ -62,12 +65,16 @@ function TapABuzzCard({
         attendanceType={attendanceType}
       ></BuzzCardPrompt>
       <View style={styles.bottomPanel}>
-        <Text style={styles.bottomPanelText}>Total attendees: {totalAttendees}</Text>
+        <ThemedText style={styles.bottomPanelText}>
+          <Text>Total attendees: {totalAttendees}</Text>
+        </ThemedText>
         {totalAttendees in AttendanceGoals && (
-          <Text style={styles.bottomPanelText}>{AttendanceGoals[totalAttendees]}</Text>
+          <ThemedText style={styles.bottomPanelText}>
+            <Text>{AttendanceGoals[totalAttendees]}</Text>
+          </ThemedText>
         )}
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
@@ -80,10 +87,6 @@ const styles = StyleSheet.create({
   bottomPanelText: {
     fontSize: 20,
     textAlign: 'right',
-  },
-  container: {
-    flex: 1,
-    margin: 10,
   },
   topPanelText: {
     fontSize: 20,

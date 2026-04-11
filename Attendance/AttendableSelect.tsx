@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useApi } from '../Api/ApiContextProvider';
 import { EventInfo, getEventInfo, getTeamInfo, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType } from '../Api/Models/Attendance';
@@ -66,28 +66,19 @@ function AttendableSelect({ attendanceType, setAttendanceType }: AttendanceProps
           setAttendable={setAttendable}
         ></TapABuzzCard>
       ) : (
-        <SafeAreaView style={styles.container}>
-          <ScrollView>
-            <RoundedButton
-              title="Change team or event"
-              onPress={() => {
-                setAttendanceType(AttendableType.NONE);
-              }}
-            />
-            <MenuHeader title={`Select a ${attendanceType}`}></MenuHeader>
-            <AttendableList></AttendableList>
-          </ScrollView>
-        </SafeAreaView>
+        <ScrollView>
+          <RoundedButton
+            title="Change team or event"
+            onPress={() => {
+              setAttendanceType(AttendableType.NONE);
+            }}
+          />
+          <MenuHeader title={`Select a ${attendanceType}`}></MenuHeader>
+          <AttendableList></AttendableList>
+        </ScrollView>
       )}
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 10,
-  },
-});
 
 export default AttendableSelect;

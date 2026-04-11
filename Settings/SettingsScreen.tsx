@@ -16,8 +16,11 @@ import { useApi } from '../Api/ApiContextProvider';
 import { getUserInfo, UserInfo } from '../Api/UserApi';
 import { useAppEnvironment } from '../AppEnvironment';
 import { logout } from '../Auth/Authentication';
+import ThemedText from '../Components/ThemedText';
+import { useTheme } from '../Themes/ThemeContextProvider';
 
 function SettingsScreen() {
+  const { currentTheme } = useTheme();
   const { environment } = useAppEnvironment();
   const api = useApi();
 
@@ -38,7 +41,7 @@ function SettingsScreen() {
 
   const SettingsHeader = ({ title }: SettingsHeaderProps) => (
     <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>{title}</Text>
+      <ThemedText style={styles.headerText}>{title}</ThemedText>
     </View>
   );
 
@@ -47,8 +50,8 @@ function SettingsScreen() {
       <View style={styles.menuLinkRow}>
         <MaterialIcons name={icon} size={30} color="#666" style={styles.menuIcon} />
         <View style={styles.menuTextContainer}>
-          <Text style={styles.menuTitle}>{title}</Text>
-          {subtitle && <Text style={styles.menuSubtitle}>{subtitle}</Text>}
+          <ThemedText style={styles.menuTitle}>{title}</ThemedText>
+          {subtitle && <ThemedText style={styles.menuSubtitle}>{subtitle}</ThemedText>}
         </View>
       </View>
     </TouchableOpacity>
@@ -56,7 +59,9 @@ function SettingsScreen() {
 
   const MadeWithLove = () => (
     <View style={styles.madeWithLoveContainer}>
-      <Text style={styles.madeWithLoveText}>{'Made with ♥ by RoboJackets'}</Text>
+      <ThemedText style={styles.madeWithLoveText}>
+        <Text>{'Made with ♥ by RoboJackets'}</Text>
+      </ThemedText>
     </View>
   );
 
@@ -101,7 +106,7 @@ function SettingsScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
       <ScrollView>
         <SettingsHeader title="Account" />
         <SettingsMenuLink
@@ -188,7 +193,7 @@ function SettingsScreen() {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 10,
+    padding: 10,
   },
   headerContainer: {
     padding: 10,

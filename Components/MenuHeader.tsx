@@ -1,13 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import ThemedText from './ThemedText';
 
 type MenuHeaderProps = { title: string };
 
-const MenuHeader = ({ title }: MenuHeaderProps) => (
-  <View style={styles.headerContainer}>
-    <Text style={styles.headerText}>{title}</Text>
-  </View>
-);
+const MenuHeader = ({ title }: MenuHeaderProps) => {
+  return (
+    <View style={styles.headerContainer}>
+      <ThemedText style={styles.headerText}>{title}</ThemedText>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   headerContainer: {

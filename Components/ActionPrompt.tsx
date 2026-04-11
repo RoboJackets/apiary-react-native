@@ -1,6 +1,7 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React from 'react';
-import { ColorValue, StyleSheet, Text, View } from 'react-native';
+import { ColorValue, StyleSheet, View } from 'react-native';
+import ThemedText from './ThemedText';
 
 type ActionPromptProps = {
   icon: React.ComponentProps<typeof MaterialIcons>['name'];
@@ -14,9 +15,9 @@ export const ActionPrompt = (props: ActionPromptProps) => {
   return (
     <View style={styles.viewContainer}>
       <MaterialIcons name={props.icon} size={100} style={styles.icon} color={props.color} />
-      <Text style={styles.mainText}>{props.title}</Text>
-      {props.subtitle && <Text style={styles.subText}>{props.subtitle}</Text>}
-      {props.subtitle2 && <Text style={styles.subText}>{props.subtitle2}</Text>}
+      <ThemedText style={styles.mainText}>{props.title}</ThemedText>
+      {props.subtitle && <ThemedText style={styles.subText}>{props.subtitle}</ThemedText>}
+      {props.subtitle2 && <ThemedText style={styles.subText}>{props.subtitle2}</ThemedText>}
     </View>
   );
 };

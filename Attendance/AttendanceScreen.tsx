@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { useApi } from '../Api/ApiContextProvider';
 import { AttendableType } from '../Api/Models/Attendance';
 import { Permission } from '../Api/Models/Permission';
@@ -8,6 +8,7 @@ import InsufficientPermissions from '../Auth/InsufficientPermissions';
 import LoadingScreen from '../Components/LoadingScreen';
 import MenuHeader from '../Components/MenuHeader';
 import MenuLink from '../Components/MenuLink';
+import { useTheme } from '../Themes/ThemeContextProvider';
 import AttendableSelect from './AttendableSelect';
 
 const requiredPermissions: Permission[] = [Permission.CREATE_ATTENDANCE, Permission.READ_USERS];
@@ -20,6 +21,7 @@ function AttendanceScreen() {
   const api = useApi();
   const [user, setUser] = useState<UserInfo | null | undefined>(undefined);
   const [missingPermissions, setMissingPermissions] = useState<Permission[] | undefined>(undefined);
+  const { currentTheme } = useTheme();
 
   async function onRefreshUser(forceRefresh: boolean = false) {
     if (!user || forceRefresh) {
@@ -45,9 +47,9 @@ function AttendanceScreen() {
     const [attendanceType, setAttendanceType] = useState<AttendableType>(AttendableType.NONE);
 
     return (
-      <>
+      <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
         {attendanceType === AttendableType.NONE ? (
-          <View style={styles.container}>
+          <>
             <MenuHeader title={'What do you want to take attendance for?'}></MenuHeader>
             <MenuLink
               title="Team"
@@ -63,14 +65,14 @@ function AttendanceScreen() {
                 setAttendanceType(AttendableType.EVENT);
               }}
             ></MenuLink>
-          </View>
+          </>
         ) : (
           <AttendableSelect
             attendanceType={attendanceType}
             setAttendanceType={setAttendanceType}
           ></AttendableSelect>
         )}
-      </>
+      </SafeAreaView>
     );
   }
 
@@ -95,10 +97,7 @@ function AttendanceScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 10,
-  },
+  container: { flex: 1, padding: 10 },
 });
 
 export default AttendanceScreen;

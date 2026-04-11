@@ -1,12 +1,18 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../Themes/ThemeContextProvider';
+import ThemedText from './ThemedText';
 
 export default function LoadingScreen() {
+  const { currentTheme } = useTheme();
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
       <ActivityIndicator size="large" />
-      <Text style={styles.text}>Loading...</Text>
-    </View>
+      <ThemedText style={styles.text}>
+        <Text>{'Loading...'}</Text>
+      </ThemedText>
+    </SafeAreaView>
   );
 }
 

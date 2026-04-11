@@ -1,6 +1,8 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useTheme } from '../Themes/ThemeContextProvider';
+import ThemedText from './ThemedText';
 
 type MenuLinkProps = {
   icon: React.ComponentProps<typeof MaterialIcons>['name'];
@@ -8,18 +10,24 @@ type MenuLinkProps = {
   onClick: () => void;
 };
 
-const MenuLink = ({ icon, title, onClick }: MenuLinkProps) => (
-  <View style={styles.menuLinkContainer}>
-    <TouchableOpacity onPress={onClick} style={styles.menuLinkTouchable}>
-      <View style={styles.menuLinkRow}>
-        <MaterialIcons name={icon} size={30} color="#666" style={styles.menuIcon} />
-        <View style={styles.menuTextContainer}>
-          <Text style={styles.menuTitle}>{title}</Text>
+const MenuLink = ({ icon, title, onClick }: MenuLinkProps) => {
+  const { currentTheme } = useTheme();
+
+  return (
+    <View style={styles.menuLinkContainer}>
+      <TouchableOpacity onPress={onClick} style={styles.menuLinkTouchable}>
+        <View style={styles.menuLinkRow}>
+          <MaterialIcons name={icon} size={30} color="#666" style={styles.menuIcon} />
+          <View style={styles.menuTextContainer}>
+            <ThemedText style={[styles.menuTitle, { color: currentTheme.onBackground }]}>
+              {title}
+            </ThemedText>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  </View>
-);
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   menuIcon: {

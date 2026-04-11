@@ -6,6 +6,7 @@ import { EventInfo, postAttendance, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType, NfcSource } from '../Api/Models/Attendance';
 import { ActionPrompt } from '../Components/ActionPrompt';
 import RoundedButton from '../Components/RoundedButton';
+import ThemedText from '../Components/ThemedText';
 import { useTheme } from '../Themes/ThemeContextProvider';
 import { LastAttendeeProps } from './TapABuzzCard';
 
@@ -180,8 +181,10 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
     return (
       <Modal animationType="fade" transparent={true}>
         <View style={styles.viewContainer}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Type the entire 9-digit GTID, starting with 90.</Text>
+          <View style={[styles.modalView, { backgroundColor: currentTheme.background }]}>
+            <ThemedText style={styles.modalText}>
+              <Text>Type the entire 9-digit GTID, starting with 90.</Text>
+            </ThemedText>
             <TextInput
               style={styles.modalInput}
               placeholder="90..."
@@ -213,7 +216,11 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
       {enterGTIDManually && <EnterGTIDForm></EnterGTIDForm>}
       <View>
         {buzzCardState === 'Ready' ? (
-          <ActionPrompt icon="contactless" title="Tap a BuzzCard"></ActionPrompt>
+          <ActionPrompt
+            icon="contactless"
+            title="Tap a BuzzCard"
+            color={currentTheme.onBackground}
+          ></ActionPrompt>
         ) : buzzCardState === 'TagLost' ? (
           <ActionPrompt
             icon="contactless"
@@ -256,7 +263,11 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
           ></ActionPrompt>
         ) : (
           // buzzCardState === 'Processing'
-          <ActionPrompt icon="contactless" title="Processing..."></ActionPrompt>
+          <ActionPrompt
+            icon="contactless"
+            title="Processing..."
+            color={currentTheme.onBackground}
+          ></ActionPrompt>
         )}
         <View style={styles.modalButtonContainer}>
           {Platform.OS === 'ios' && ( // only relevant to ios, after modal closed to display error
