@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { ItemList } from '../Components/ItemList';
+import { Colors } from '../Themes/Colors';
 
 function MerchandiseScreen() {
   return (
@@ -19,13 +20,13 @@ function MerchandiseScreen() {
           ]} // Replace with actual merchandise data
           onItemSelected={(item) => console.log(item)}
           title={
-            <Text style={{ fontSize: 20, color: 'black' }}>
-              Pick a merchandise item to distribute
-            </Text>
+            //Replace with actual color from current theme
+            <Text style={{ color: Colors.surfaceDark }}>Pick a merchandise item to distribute</Text>
           }
           itemKey={(item, index) => index.toString()}
           empty={<Text>No items available</Text>}
-          itemContent={(item) => <Text style={{ color: 'black' }}>{item.name}</Text>}
+          //Replace with actual color from current theme
+          itemContent={(item) => <Text style={{ color: Colors.surfaceDark }}>{item.name}</Text>}
         />
       }
     </View>
