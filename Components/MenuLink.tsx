@@ -19,9 +19,10 @@ const MenuLink = ({ icon, title, onClick }: MenuLinkProps) => {
         <View style={styles.menuLinkRow}>
           <MaterialIcons name={icon} size={30} color="#666" style={styles.menuIcon} />
           <View style={styles.menuTextContainer}>
-            <ThemedText style={[styles.menuTitle, { color: currentTheme.onBackground }]}>
-              {title}
-            </ThemedText>
+            <ThemedText
+              style={[styles.menuTitle, { color: currentTheme.onBackground }]}
+              title={title}
+            />
           </View>
         </View>
       </TouchableOpacity>

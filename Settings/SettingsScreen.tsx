@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -41,7 +40,7 @@ function SettingsScreen() {
 
   const SettingsHeader = ({ title }: SettingsHeaderProps) => (
     <View style={styles.headerContainer}>
-      <ThemedText style={styles.headerText}>{title}</ThemedText>
+      <ThemedText style={styles.headerText} title={title} />
     </View>
   );
 
@@ -50,8 +49,8 @@ function SettingsScreen() {
       <View style={styles.menuLinkRow}>
         <MaterialIcons name={icon} size={30} color="#666" style={styles.menuIcon} />
         <View style={styles.menuTextContainer}>
-          <ThemedText style={styles.menuTitle}>{title}</ThemedText>
-          {subtitle && <ThemedText style={styles.menuSubtitle}>{subtitle}</ThemedText>}
+          <ThemedText style={styles.menuTitle} title={title} />
+          {subtitle && <ThemedText style={styles.menuSubtitle} title={subtitle} />}
         </View>
       </View>
     </TouchableOpacity>
@@ -59,9 +58,7 @@ function SettingsScreen() {
 
   const MadeWithLove = () => (
     <View style={styles.madeWithLoveContainer}>
-      <ThemedText style={styles.madeWithLoveText}>
-        <Text>{'Made with ♥ by RoboJackets'}</Text>
-      </ThemedText>
+      <ThemedText style={styles.madeWithLoveText} title="Made with ♥ by RoboJackets" />
     </View>
   );
 

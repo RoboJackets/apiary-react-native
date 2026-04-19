@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Modal, NativeModules, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Modal, NativeModules, Platform, StyleSheet, TextInput, View } from 'react-native';
 import NfcManager, { NfcTech } from 'react-native-nfc-manager';
 import { useApi } from '../Api/ApiContextProvider';
 import { EventInfo, postAttendance, TeamInfo } from '../Api/MeetingsApi';
@@ -41,9 +41,15 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
   const [buzzCardState, setBuzzCardState] = useState<BuzzCardState>('Ready');
   const [enterGTIDManually, setEnterGTIDManually] = useState<boolean>(false);
   const lastGtidRef = useRef<number | null>(null); // keep track of last gtid to prevent duplicates
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
     beginScan();
+    return () => {
+      // Mark as unmounted so callbacks don't update state
+      isMountedRef.current = false;
+      NfcManager.cancelTechnologyRequest().catch(() => {});
+    };
   }, []);
 
   /**
@@ -79,12 +85,22 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
    * @returns none
    */
   const handleNfcResult = async (error: Error | null, result: number[] | null) => {
+    if (!isMountedRef.current) return; // ← drop stale callbacks entirely
+
     if (error) {
       const errorMsg = error.message || '';
       if (errorMsg.includes('Wrong CLA')) {
         setBuzzCardState('NotABuzzCard');
       } else if (errorMsg.includes('Tag was lost') || errorMsg.includes('Incomplete response')) {
         setBuzzCardState('TagLost');
+      } else if (
+        errorMsg.includes('cancelled') || // ios wording
+        errorMsg.includes('canceled') ||
+        errorMsg.includes('UserCancel') ||
+        errorMsg.includes('Tech request was cancelled') // android wording
+      ) {
+        // intentional cancellation on unmount — do nothing
+        return;
       } else {
         setBuzzCardState('UnknownNfcError');
       }
@@ -182,9 +198,10 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
       <Modal animationType="fade" transparent={true}>
         <View style={styles.viewContainer}>
           <View style={[styles.modalView, { backgroundColor: currentTheme.background }]}>
-            <ThemedText style={styles.modalText}>
-              <Text>Type the entire 9-digit GTID, starting with 90.</Text>
-            </ThemedText>
+            <ThemedText
+              style={styles.modalText}
+              title="Type the entire 9-digit GTID, starting with 90."
+            />
             <TextInput
               style={styles.modalInput}
               placeholder="90..."

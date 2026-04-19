@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { Modal, RadioButton } from 'react-native-paper';
 import { APP_ENVIRONMENTS, useAppEnvironment } from '../AppEnvironment';
 import RoundedButton from '../Components/RoundedButton';
@@ -45,27 +45,19 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
       onDismiss={onDismiss}
       contentContainerStyle={[styles.sheet, { backgroundColor: currentTheme.background }]}
     >
-      <ThemedText style={styles.title}>
-        <Text>Change Server</Text>
-      </ThemedText>
+      <ThemedText style={styles.title} title="Change Server" />
       <RadioButton.Group onValueChange={setSelectedEnv} value={selectedEnv}>
         <View style={styles.row}>
           <RadioButton.Android value="production" />
-          <ThemedText>
-            <Text>Production</Text>
-          </ThemedText>
+          <ThemedText title="Production" />
         </View>
         <View style={styles.row}>
           <RadioButton.Android value="test" />
-          <ThemedText>
-            <Text>Test</Text>
-          </ThemedText>
+          <ThemedText title="Test" />
         </View>
         <View style={styles.row}>
           <RadioButton.Android value="other" />
-          <ThemedText>
-            <Text>Other</Text>
-          </ThemedText>
+          <ThemedText title="Other" />
         </View>
       </RadioButton.Group>
 
@@ -79,7 +71,7 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
         />
       )}
 
-      {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
+      {error && <ThemedText style={styles.errorText} title={error} />}
 
       <RoundedButton
         title="Save Changes"

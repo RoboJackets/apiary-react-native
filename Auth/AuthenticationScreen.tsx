@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppEnvironment } from '../AppEnvironment';
 import RoundedButton from '../Components/RoundedButton';
@@ -49,11 +49,7 @@ function AuthenticationScreen() {
       </View>
       <View style={styles.lower}>
         <TransparentButton title="Change Server" onPress={() => setEnvChangeVisible(true)} />
-        <ThemedText>
-          <Text>
-            Server: {environment.name} ({environment.baseUrl})
-          </Text>
-        </ThemedText>
+        <ThemedText title={`Server: ${environment.name} (${environment.baseUrl})`} />
       </View>
       <EnvironmentSelect visible={envChangeVisible} onDismiss={() => setEnvChangeVisible(false)} />
     </SafeAreaView>

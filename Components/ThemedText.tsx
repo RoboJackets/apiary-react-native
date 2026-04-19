@@ -3,13 +3,13 @@ import { StyleSheet, Text, TextProps } from 'react-native';
 import { useTheme } from '../Themes/ThemeContextProvider';
 
 type ThemedTextProps = TextProps & {
-  children: React.ReactNode;
+  title: string;
 };
 
-const ThemedText = ({ children, style }: ThemedTextProps) => {
+const ThemedText = ({ title, style }: ThemedTextProps) => {
   const { currentTheme } = useTheme();
 
-  return <Text style={[styles.text, { color: currentTheme.onBackground }, style]}>{children}</Text>;
+  return <Text style={[styles.text, { color: currentTheme.onBackground }, style]}>{title}</Text>;
 };
 
 const styles = StyleSheet.create({

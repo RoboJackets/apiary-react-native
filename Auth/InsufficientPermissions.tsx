@@ -1,6 +1,6 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React, { useState } from 'react';
-import { Button, Modal, StyleSheet, Text, View } from 'react-native';
+import { Button, Modal, StyleSheet, View } from 'react-native';
 import { Permission } from '../Api/Models/Permission';
 import ThemedText from '../Components/ThemedText';
 import { useTheme } from '../Themes/ThemeContextProvider';
@@ -46,7 +46,7 @@ function InsufficientPermissions({
             style={styles.icon}
           />
         )}
-        <ThemedText style={styles.permissionItemText}>{permission}</ThemedText>
+        <ThemedText style={styles.permissionItemText} title={permission} />
       </View>
     ));
   };
@@ -56,9 +56,7 @@ function InsufficientPermissions({
       <Modal animationType="fade" transparent={true}>
         <View style={styles.container}>
           <View style={[styles.modalView, { backgroundColor: currentTheme.background }]}>
-            <ThemedText style={styles.modalText}>
-              <Text>Required Permissions</Text>
-            </ThemedText>
+            <ThemedText style={styles.modalText} title="Required Permissions" />
             <PermissionDetailsList permissions={missingPermissions} hasPermission={false} />
             <PermissionDetailsList permissions={satisfiedPermissions} hasPermission={true} />
             <View style={styles.modalButton}>
@@ -79,9 +77,7 @@ function InsufficientPermissions({
         color={currentTheme.error}
         style={styles.icon}
       />
-      <ThemedText style={styles.mainText}>
-        <Text>{featureName} permissions required</Text>
-      </ThemedText>
+      <ThemedText style={styles.mainText} title={`${featureName} permissions required`} />
       <View style={styles.buttonTopRow}>
         <View style={styles.button}>
           <Button onPress={() => {}} title="Go to #it-helpdesk" />

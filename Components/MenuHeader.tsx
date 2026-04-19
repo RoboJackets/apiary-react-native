@@ -7,7 +7,7 @@ type MenuHeaderProps = { title: string };
 const MenuHeader = ({ title }: MenuHeaderProps) => {
   return (
     <View style={styles.headerContainer}>
-      <ThemedText style={styles.headerText}>{title}</ThemedText>
+      <ThemedText style={styles.headerText} title={title} />
     </View>
   );
 };

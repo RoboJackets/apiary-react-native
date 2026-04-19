@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { EventInfo, TeamInfo } from '../Api/MeetingsApi';
 import { AttendableType } from '../Api/Models/Attendance';
 import MenuHeader from '../Components/MenuHeader';
@@ -48,9 +48,10 @@ function TapABuzzCard({
           }}
         />
         <MenuHeader title={`Recording attendance for ${attendable.name}`}></MenuHeader>
-        <ThemedText style={styles.topPanelText}>
-          <Text>Last attendee: {lastAttendee?.name || 'None'}</Text>
-        </ThemedText>
+        <ThemedText
+          style={styles.topPanelText}
+          title={`Last attendee: ${lastAttendee?.name || 'None'}`}
+        />
       </View>
     );
   }
@@ -65,13 +66,9 @@ function TapABuzzCard({
         attendanceType={attendanceType}
       ></BuzzCardPrompt>
       <View style={styles.bottomPanel}>
-        <ThemedText style={styles.bottomPanelText}>
-          <Text>Total attendees: {totalAttendees}</Text>
-        </ThemedText>
+        <ThemedText style={styles.bottomPanelText} title={`Total attendees: ${totalAttendees}`} />
         {totalAttendees in AttendanceGoals && (
-          <ThemedText style={styles.bottomPanelText}>
-            <Text>{AttendanceGoals[totalAttendees]}</Text>
-          </ThemedText>
+          <ThemedText style={styles.bottomPanelText} title={AttendanceGoals[totalAttendees]} />
         )}
       </View>
     </>

@@ -15,9 +15,9 @@ export const ActionPrompt = (props: ActionPromptProps) => {
   return (
     <View style={styles.viewContainer}>
       <MaterialIcons name={props.icon} size={100} style={styles.icon} color={props.color} />
-      <ThemedText style={styles.mainText}>{props.title}</ThemedText>
-      {props.subtitle && <ThemedText style={styles.subText}>{props.subtitle}</ThemedText>}
-      {props.subtitle2 && <ThemedText style={styles.subText}>{props.subtitle2}</ThemedText>}
+      <ThemedText style={styles.mainText} title={props.title} />
+      {props.subtitle && <ThemedText style={styles.subText} title={props.subtitle} />}
+      {props.subtitle2 && <ThemedText style={styles.subText} title={props.subtitle2} />}
     </View>
   );
 };
