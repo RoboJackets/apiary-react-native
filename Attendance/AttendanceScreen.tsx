@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { useApi } from '../Api/ApiContextProvider';
 import { AttendableType } from '../Api/Models/Attendance';
 import { Permission } from '../Api/Models/Permission';
@@ -48,30 +48,32 @@ function AttendanceScreen() {
 
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
-        {attendanceType === AttendableType.NONE ? (
-          <>
-            <MenuHeader title={'What do you want to take attendance for?'}></MenuHeader>
-            <MenuLink
-              title="Team"
-              icon="group"
-              onClick={() => {
-                setAttendanceType(AttendableType.TEAM);
-              }}
-            ></MenuLink>
-            <MenuLink
-              title="Event"
-              icon="event"
-              onClick={() => {
-                setAttendanceType(AttendableType.EVENT);
-              }}
-            ></MenuLink>
-          </>
-        ) : (
-          <AttendableSelect
-            attendanceType={attendanceType}
-            setAttendanceType={setAttendanceType}
-          ></AttendableSelect>
-        )}
+        <View style={styles.viewContainer}>
+          {attendanceType === AttendableType.NONE ? (
+            <>
+              <MenuHeader title={'What do you want to take attendance for?'}></MenuHeader>
+              <MenuLink
+                title="Team"
+                icon="group"
+                onClick={() => {
+                  setAttendanceType(AttendableType.TEAM);
+                }}
+              ></MenuLink>
+              <MenuLink
+                title="Event"
+                icon="event"
+                onClick={() => {
+                  setAttendanceType(AttendableType.EVENT);
+                }}
+              ></MenuLink>
+            </>
+          ) : (
+            <AttendableSelect
+              attendanceType={attendanceType}
+              setAttendanceType={setAttendanceType}
+            ></AttendableSelect>
+          )}
+        </View>
       </SafeAreaView>
     );
   }
@@ -97,7 +99,8 @@ function AttendanceScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
+  container: { flex: 1 },
+  viewContainer: { flex: 1, padding: 10 },
 });
 
 export default AttendanceScreen;

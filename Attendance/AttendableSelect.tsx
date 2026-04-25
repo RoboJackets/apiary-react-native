@@ -73,7 +73,11 @@ function AttendableSelect({ attendanceType, setAttendanceType }: AttendanceProps
               setAttendanceType(AttendableType.NONE);
             }}
           />
-          <MenuHeader title={`Select an ${attendanceType}`}></MenuHeader>
+          {attendanceType == AttendableType.EVENT ? (
+            <MenuHeader title={`Select an ${attendanceType}`}></MenuHeader>
+          ) : (
+            <MenuHeader title={`Select a ${attendanceType}`}></MenuHeader>
+          )}
           <AttendableList></AttendableList>
         </ScrollView>
       )}
