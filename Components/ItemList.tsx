@@ -7,8 +7,6 @@ type ItemListProps<T> = {
   title: React.ReactNode;
   itemKey: (item: T, index: number) => string;
   callout?: React.ReactNode;
-  preItem?: (index: number) => React.ReactNode;
-  postItem?: (index: number) => React.ReactNode;
   empty?: React.ReactNode;
   itemContent: (item: T) => React.ReactNode;
   separator?: React.ReactNode;
@@ -29,15 +27,11 @@ export function ItemList<T>(props: ItemListProps<T>) {
           ItemSeparatorComponent={() => (
             <View>{props.separator ?? <View style={styles.separator} />}</View>
           )}
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <View>
-              {props.preItem?.(index)}
-
               <Pressable onPress={() => props.onItemSelected(item)} style={styles.listItem}>
                 {props.itemContent(item)}
               </Pressable>
-
-              {props.postItem?.(index)}
             </View>
           )}
         />
