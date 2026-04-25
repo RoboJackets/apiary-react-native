@@ -6,7 +6,7 @@ import { Colors } from '../Themes/Colors';
 function MerchandiseScreen() {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
-    <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
       <Text>Merchandise Screen</Text>
       {
         //Example of how to use the ItemList component. Replace with actual merchandise data and navigation logic as needed.
@@ -16,6 +16,17 @@ function MerchandiseScreen() {
             { name: 'Hoodie' },
             { name: 'Mug' },
             { name: 'Sticker' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
+            { name: 'Cap' },
             { name: 'Cap' },
           ]} // Replace with actual merchandise data
           onItemSelected={(item) => console.log(item)}

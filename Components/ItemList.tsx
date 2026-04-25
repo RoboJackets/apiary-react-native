@@ -43,6 +43,7 @@ export function ItemList<T>(props: ItemListProps<T>) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
   },
   listItem: {
     borderColor: '#ddd',
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
   separator: {
     // Default styles, which can be overridden by props
     backgroundColor: '#ccc', // Default color (light gray)
-    height: StyleSheet.hairlineWidth + 2, // Determines the thickness of the line
+    height: 2, // Determines the thickness of the line
     marginVertical: 5, // Adds some space above and below the line
     width: '100%', // Makes the line span the full width
   },
