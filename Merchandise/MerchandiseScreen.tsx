@@ -1,14 +1,12 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { ItemList } from '../Components/ItemList';
-import { Colors } from '../Themes/Colors';
 
 function MerchandiseScreen() {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Merchandise Screen</Text>
-      {
+      {/* {
         //Example of how to use the ItemList component. Replace with actual merchandise data and navigation logic as needed.
         <ItemList
           items={[
@@ -39,7 +37,7 @@ function MerchandiseScreen() {
           //Replace with actual color from current theme
           itemContent={(item) => <Text style={{ color: Colors.surfaceDark }}>{item.name}</Text>}
         />
-      }
+      } */}
     </View>
   );
 }
