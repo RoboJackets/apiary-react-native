@@ -5,6 +5,7 @@ import React from 'react';
 import AttendanceScreen from '../Attendance/AttendanceScreen';
 import MerchandiseScreen from '../Merchandise/MerchandiseScreen';
 import SettingsScreen from '../Settings/SettingsScreen';
+import { useTheme } from '../Themes/ThemeContextProvider';
 type NavBarProps = {
   hidden?: boolean | null;
 };
@@ -12,11 +13,16 @@ type NavBarProps = {
 const Tab = createBottomTabNavigator();
 
 function NavBar(props: NavBarProps) {
+  const { currentTheme } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: props.hidden ? { display: 'none' } : {},
+        tabBarStyle: [
+          { backgroundColor: currentTheme.background },
+          props.hidden && { display: 'none' },
+        ],
       }}
     >
       <Tab.Screen

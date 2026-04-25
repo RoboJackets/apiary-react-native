@@ -16,6 +16,11 @@ export const APP_ENVIRONMENTS: AppEnvironmentList = {
     production: true,
     baseUrl: 'https://my.robojackets.org',
   },
+  test: {
+    name: 'Test',
+    production: false,
+    baseUrl: 'https://apiary-test.robojackets.org',
+  },
 };
 
 type EnvironmentContextType = {

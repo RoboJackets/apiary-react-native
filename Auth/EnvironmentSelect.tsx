@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { Modal, RadioButton } from 'react-native-paper';
 import { APP_ENVIRONMENTS, useAppEnvironment } from '../AppEnvironment';
 import RoundedButton from '../Components/RoundedButton';
+import ThemedText from '../Components/ThemedText';
+import { useTheme } from '../Themes/ThemeContextProvider';
 
 type EnvironmentSelectProps = {
   visible: boolean;
@@ -10,6 +12,7 @@ type EnvironmentSelectProps = {
 };
 
 export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSelectProps) {
+  const { currentTheme } = useTheme();
   const { environment, setEnvironment } = useAppEnvironment();
   const [selectedEnv, setSelectedEnv] = useState<string>(environment.name.toLowerCase());
   const [customUrl, setCustomUrl] = useState<string>('');
@@ -37,16 +40,24 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
   }
 
   return (
-    <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.sheet}>
-      <Text style={styles.title}>Change Server</Text>
+    <Modal
+      visible={visible}
+      onDismiss={onDismiss}
+      contentContainerStyle={[styles.sheet, { backgroundColor: currentTheme.background }]}
+    >
+      <ThemedText style={styles.title} title="Change Server" />
       <RadioButton.Group onValueChange={setSelectedEnv} value={selectedEnv}>
         <View style={styles.row}>
           <RadioButton.Android value="production" />
-          <Text>Production</Text>
+          <ThemedText title="Production" />
+        </View>
+        <View style={styles.row}>
+          <RadioButton.Android value="test" />
+          <ThemedText title="Test" />
         </View>
         <View style={styles.row}>
           <RadioButton.Android value="other" />
-          <Text>Other</Text>
+          <ThemedText title="Other" />
         </View>
       </RadioButton.Group>
 
@@ -60,7 +71,7 @@ export default function EnvironmentSelect({ visible, onDismiss }: EnvironmentSel
         />
       )}
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <ThemedText style={styles.errorText} title={error} />}
 
       <RoundedButton
         title="Save Changes"
