@@ -4,12 +4,22 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 type RoundedButtonProps = {
   title: string;
   onPress: () => void;
+  color?: string;
+  textColor?: string;
+  borderColor?: string;
 };
 
 function RoundedButton(props: RoundedButtonProps) {
   return (
-    <TouchableOpacity style={styles.button} onPress={props.onPress}>
-      <Text style={styles.text}>{props.title}</Text>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        { backgroundColor: props.color ?? '#007AFF' },
+        { borderColor: props.borderColor ?? 'transparent' },
+      ]}
+      onPress={props.onPress}
+    >
+      <Text style={[styles.text, { color: props.textColor ?? '#fff' }]}>{props.title}</Text>
     </TouchableOpacity>
   );
 }
@@ -17,14 +27,12 @@ function RoundedButton(props: RoundedButtonProps) {
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
-    backgroundColor: '#007AFF',
     borderRadius: 30,
     justifyContent: 'center',
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
   text: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },

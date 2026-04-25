@@ -1,13 +1,15 @@
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React, { useState } from 'react';
-import { Button, Modal, StyleSheet, Text, View } from 'react-native';
+import { Button, Modal, StyleSheet, View } from 'react-native';
+import { Permission } from '../Api/Models/Permission';
+import ThemedText from '../Components/ThemedText';
 import { useTheme } from '../Themes/ThemeContextProvider';
 
 type InsufficientPermissionsProps = {
   featureName: string;
   onRetry: () => void;
-  missingPermissions: string[];
-  requiredPermissions: string[];
+  missingPermissions: Permission[];
+  requiredPermissions: Permission[];
 };
 
 function InsufficientPermissions({
@@ -44,7 +46,7 @@ function InsufficientPermissions({
             style={styles.icon}
           />
         )}
-        <Text style={styles.permissionItemText}>{permission}</Text>
+        <ThemedText style={styles.permissionItemText} title={permission} />
       </View>
     ));
   };
@@ -52,9 +54,9 @@ function InsufficientPermissions({
   const PermissionDetailsDialog = () => {
     return (
       <Modal animationType="fade" transparent={true}>
-        <View style={styles.viewContainer}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Required Permissions</Text>
+        <View style={styles.container}>
+          <View style={[styles.modalView, { backgroundColor: currentTheme.background }]}>
+            <ThemedText style={styles.modalText} title="Required Permissions" />
             <PermissionDetailsList permissions={missingPermissions} hasPermission={false} />
             <PermissionDetailsList permissions={satisfiedPermissions} hasPermission={true} />
             <View style={styles.modalButton}>
@@ -67,7 +69,7 @@ function InsufficientPermissions({
   };
 
   return (
-    <View style={styles.viewContainer}>
+    <View style={[styles.container, { backgroundColor: currentTheme.background }]}>
       {detailsVisible && <PermissionDetailsDialog></PermissionDetailsDialog>}
       <MaterialIcons
         name={'error-outline'}
@@ -75,7 +77,7 @@ function InsufficientPermissions({
         color={currentTheme.error}
         style={styles.icon}
       />
-      <Text style={styles.mainText}>{featureName} permissions required</Text>
+      <ThemedText style={styles.mainText} title={`${featureName} permissions required`} />
       <View style={styles.buttonTopRow}>
         <View style={styles.button}>
           <Button onPress={() => {}} title="Go to #it-helpdesk" />
@@ -103,6 +105,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
+  container: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 10,
+  },
   icon: {
     margin: 10,
   },
@@ -120,7 +128,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   modalView: {
-    backgroundColor: 'white',
     borderRadius: 20,
     elevation: 5,
     margin: 20,
@@ -151,12 +158,6 @@ const styles = StyleSheet.create({
   },
   permissionItemText: {
     fontSize: 15,
-  },
-  viewContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    margin: 10,
   },
 });
 
