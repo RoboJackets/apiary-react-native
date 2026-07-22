@@ -163,6 +163,7 @@ yarn react-native legal-generate
 
 - [Git Command Cheat Sheet](https://git-scm.com/cheat-sheet)
 - [Resolving Git Merge Conflicts](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line)
+- [Linux Command Cheat Sheet](https://linux-commands.labex.io/)
 - [React Native Basics](https://reactnative.dev/docs/getting-started)
 
 Message the #web-app-development channel on Slack if you have any questions!
