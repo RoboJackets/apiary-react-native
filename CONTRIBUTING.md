@@ -1,6 +1,12 @@
 # Contributing to the RoboJackets Mobile App
 
-> Message the #web-app-development channel on Slack if you have any questions!
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Running the App](#running-the-app)
+- [Development Workflow](#development-workflow)
+- [Useful Resources](#useful-resources)
+- [Points of Contact](#points-of-contact)
 
 ## Getting Started
 
@@ -145,7 +151,7 @@ After you make the PR, add Reviewers under the Reviewers -> Settings cog menu. (
 
 This is the general process by which features are merged into the project!
 
-# Legal
+### Legal
 
 This project is open-source and is supported by many open-source libraries.
 The app includes a notice of these dependencies which must be updated when a
@@ -166,4 +172,9 @@ yarn react-native legal-generate
 - [Linux Command Cheat Sheet](https://linux-commands.labex.io/)
 - [React Native Basics](https://reactnative.dev/docs/getting-started)
 
-Message the #web-app-development channel on Slack if you have any questions!
+## Points of Contact
+
+Slack channels:
+- **#web-app-development**: For questions about the development of this app
+- **#apiary-mobile**: For IT questions about mobile app, provisioning iOS dev licenses
+- **#apiary**: For questions about the RoboJackets website and APIs 
