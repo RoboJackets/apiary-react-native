@@ -32,10 +32,7 @@ function AuthenticationScreen() {
           {
             text: 'OK',
             onPress: () =>
-              Authentication.setAuthenticationState(
-                AuthenticationState.UNAUTHENTICATED,
-                null,
-              ),
+              Authentication.setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null),
           },
         ],
       );
