@@ -2,12 +2,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import NfcManager from 'react-native-nfc-manager';
+import LoadingScreen from '../../Components/LoadingScreen';
+import { AuthenticationState } from '../../constants/auth/AuthenticationState';
+import { useTheme } from '../../Themes/ThemeContextProvider';
 import { AuthContext } from '../Auth/AuthContextProvider';
-import { AuthenticationState } from '../Auth/Authentication';
 import AuthenticationScreen from '../Auth/AuthenticationScreen';
-import LoadingScreen from '../Components/LoadingScreen';
 import NfcEnabledScreen from '../Nfc/NfcEnabledScreen';
-import { useTheme } from '../Themes/ThemeContextProvider';
 import NavBar from './NavBar';
 
 const Stack = createNativeStackNavigator();

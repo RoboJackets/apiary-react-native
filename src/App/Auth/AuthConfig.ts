@@ -1,5 +1,5 @@
 import { AuthConfiguration } from 'react-native-app-auth';
-import { AppEnvironment } from '../AppEnvironment';
+import { AppEnvironment } from '../../../AppEnvironment';
 
 /**
  * Generates a configuration to send OAuth servers for authentication or refresh.

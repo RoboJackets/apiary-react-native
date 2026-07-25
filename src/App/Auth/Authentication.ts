@@ -2,15 +2,10 @@ import { jwtDecode } from 'jwt-decode';
 import { Platform } from 'react-native';
 import { authorize, AuthorizeResult, refresh } from 'react-native-app-auth';
 import * as Keychain from 'react-native-keychain';
-import { AppEnvironment } from '../AppEnvironment';
+import { AppEnvironment } from '../../../AppEnvironment';
+import { AuthenticationState } from '../../constants/auth/AuthenticationState';
 import config from './AuthConfig';
 
-export enum AuthenticationState {
-  UNAUTHENTICATED,
-  AUTHENTICATED,
-  ERROR,
-  UNKNOWN,
-}
 let currentAuthState: AuthenticationState = AuthenticationState.UNKNOWN;
 let authStateListeners: ((s: AuthenticationState) => void)[] = [];
 export let authError: string = '';
@@ -135,7 +130,7 @@ export async function authTokenIsValid(currentEnvironment: AppEnvironment) {
  * Checks for existence of a refresh token. Refresh tokens do not store an expiration date.
  * @returns whether or not a refresh token exists
  */
-export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
+export async function refreshTokenExists(currentEnvironment: AppEnvironment) {
   const token = await Keychain.getInternetCredentials(currentEnvironment.baseUrl + ':refreshToken');
   return token && token.password;
 }
@@ -145,7 +140,7 @@ export async function refreshTokenIsValid(currentEnvironment: AppEnvironment) {
  * @returns Whether or not refresh was successful.
  */
 export async function refreshAuth(currentEnvironment: AppEnvironment) {
-  if (!(await refreshTokenIsValid(currentEnvironment))) {
+  if (!(await refreshTokenExists(currentEnvironment))) {
     setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null);
     return false;
   }

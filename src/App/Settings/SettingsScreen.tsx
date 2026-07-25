@@ -11,12 +11,12 @@ import {
 } from 'react-native';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn';
 import { ReactNativeLegal } from 'react-native-legal';
-import { useApi } from '../Api/ApiContextProvider';
-import { getUserInfo, UserInfo } from '../Api/UserApi';
-import { useAppEnvironment } from '../AppEnvironment';
+import { useAppEnvironment } from '../../../AppEnvironment';
+import { useApi } from '../../Api/ApiContextProvider';
+import { getUserInfo, UserInfo } from '../../Api/UserApi';
+import ThemedText from '../../Components/ThemedText';
+import { useTheme } from '../../Themes/ThemeContextProvider';
 import { logout } from '../Auth/Authentication';
-import ThemedText from '../Components/ThemedText';
-import { useTheme } from '../Themes/ThemeContextProvider';
 
 function SettingsScreen() {
   const { currentTheme } = useTheme();

@@ -2,8 +2,8 @@ import MaterialIcons from '@react-native-vector-icons/material-icons';
 import React, { useState } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 import nfcManager from 'react-native-nfc-manager';
-import ThemedText from '../Components/ThemedText';
-import { useTheme } from '../Themes/ThemeContextProvider';
+import ThemedText from '../../Components/ThemedText';
+import { useTheme } from '../../Themes/ThemeContextProvider';
 
 type NfcEnabledProps = {
   nfcEnabled: string;

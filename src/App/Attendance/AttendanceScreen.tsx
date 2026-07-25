@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { useApi } from '../Api/ApiContextProvider';
-import { AttendableType } from '../Api/Models/Attendance';
-import { Permission } from '../Api/Models/Permission';
-import { getUserInfo, UserInfo } from '../Api/UserApi';
+import { useApi } from '../../Api/ApiContextProvider';
+import { getUserInfo, UserInfo } from '../../Api/UserApi';
+import LoadingScreen from '../../Components/LoadingScreen';
+import MenuHeader from '../../Components/MenuHeader';
+import MenuLink from '../../Components/MenuLink';
+import { AttendableType } from '../../constants/api/Models/Attendance';
+import { Permission } from '../../constants/api/Models/Permission';
+import { useTheme } from '../../Themes/ThemeContextProvider';
 import InsufficientPermissions from '../Auth/InsufficientPermissions';
-import LoadingScreen from '../Components/LoadingScreen';
-import MenuHeader from '../Components/MenuHeader';
-import MenuLink from '../Components/MenuLink';
-import { useTheme } from '../Themes/ThemeContextProvider';
 import AttendableSelect from './AttendableSelect';
 
 const requiredPermissions: Permission[] = [Permission.CREATE_ATTENDANCE, Permission.READ_USERS];

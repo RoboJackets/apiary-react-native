@@ -1,11 +1,11 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import ApiContextProvider from './Api/ApiContextProvider';
 import { AppEnvironmentProvider } from './AppEnvironment';
-import AuthContextProvider from './Auth/AuthContextProvider';
-import RootStack from './Navigation/RootStack';
-import ThemeProvider from './Themes/ThemeContextProvider';
+import ApiContextProvider from './src/Api/ApiContextProvider';
+import AuthContextProvider from './src/App/Auth/AuthContextProvider';
+import RootStack from './src/App/Navigation/RootStack';
+import ThemeProvider from './src/Themes/ThemeContextProvider';
 
 function App() {
   return (

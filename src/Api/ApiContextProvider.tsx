@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import React, { createContext, ReactNode, useContext } from 'react';
-import { AppEnvironment, useAppEnvironment } from '../AppEnvironment';
-import { getAuthToken, refreshAuth } from '../Auth/Authentication';
+import { AppEnvironment, useAppEnvironment } from '../../AppEnvironment';
+import { getAuthToken, refreshAuth } from '../App/Auth/Authentication';
 
 /**
  * Context containing API configuration for the app.
