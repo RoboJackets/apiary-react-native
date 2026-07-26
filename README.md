@@ -1,4 +1,4 @@
-This is a version of the Apiary app written in React Native, with the goal of cross-platform support between Android and iOS.s
+This is a version of the Apiary app written in React Native, with the goal of cross-platform support between Android and iOS.
 
 # Getting Started
 
