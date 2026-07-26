@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal, NativeModules, Platform, StyleSheet, TextInput, View } from 'react-native';
 import NfcManager, { NfcTech } from 'react-native-nfc-manager';
-import { useApi } from '../Api/ApiContextProvider';
-import { EventInfo, postAttendance, TeamInfo } from '../Api/MeetingsApi';
-import { AttendableType, NfcSource } from '../Api/Models/Attendance';
-import { ActionPrompt } from '../Components/ActionPrompt';
-import RoundedButton from '../Components/RoundedButton';
-import ThemedText from '../Components/ThemedText';
-import { useTheme } from '../Themes/ThemeContextProvider';
+import { useApi } from '../../Api/ApiContextProvider';
+import { EventInfo, postAttendance, TeamInfo } from '../../Api/AttendanceApi';
+import { ActionPrompt } from '../../Components/ActionPrompt';
+import RoundedButton from '../../Components/RoundedButton';
+import ThemedText from '../../Components/ThemedText';
+import { AttendableType, NfcSource } from '../../constants/api/Models/Attendance';
+import { READ_FILE, SELECT_APP } from '../../constants/BuzzCardReadCommands';
+import { useTheme } from '../../Themes/ThemeContextProvider';
 import { LastAttendeeProps } from './TapABuzzCard';
-
-const selectApp = [0x90, 0x5a, 0x00, 0x00, 0x03, 0xcd, 0xbb, 0xbb, 0x00];
-const readFile = [0x90, 0xbd, 0x00, 0x00, 0x07, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00];
 
 // Names taken from Android App
 export type BuzzCardState =
@@ -58,14 +56,14 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
   const beginScan = async () => {
     if (Platform.OS === 'ios') {
       const { BuzzCardReader } = NativeModules;
-      BuzzCardReader.sendCommand(selectApp, readFile, handleNfcResult);
+      BuzzCardReader.sendCommand(SELECT_APP, READ_FILE, handleNfcResult);
     } else if (Platform.OS === 'android') {
       try {
         await NfcManager.start();
         await NfcManager.requestTechnology(NfcTech.IsoDep);
         await NfcManager.getTag();
-        await NfcManager.transceive(selectApp);
-        const result = await NfcManager.transceive(readFile);
+        await NfcManager.transceive(SELECT_APP);
+        const result = await NfcManager.transceive(READ_FILE);
         handleNfcResult(null, result);
       } catch (error: unknown) {
         handleNfcResult(error instanceof Error ? error : new Error(String(error)), null);

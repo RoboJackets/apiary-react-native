@@ -2,10 +2,10 @@ import MaterialDesignIcons from '@react-native-vector-icons/material-design-icon
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
+import { useTheme } from '../../Themes/ThemeContextProvider';
 import AttendanceScreen from '../Attendance/AttendanceScreen';
 import MerchandiseScreen from '../Merchandise/MerchandiseScreen';
 import SettingsScreen from '../Settings/SettingsScreen';
-import { useTheme } from '../Themes/ThemeContextProvider';
 type NavBarProps = {
   hidden?: boolean | null;
 };

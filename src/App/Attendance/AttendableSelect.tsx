@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
-import { useApi } from '../Api/ApiContextProvider';
-import { EventInfo, getEventInfo, getTeamInfo, TeamInfo } from '../Api/MeetingsApi';
-import { AttendableType } from '../Api/Models/Attendance';
-import LoadingScreen from '../Components/LoadingScreen';
-import MenuHeader from '../Components/MenuHeader';
-import MenuLink from '../Components/MenuLink';
-import RoundedButton from '../Components/RoundedButton';
+import { useApi } from '../../Api/ApiContextProvider';
+import { EventInfo, getEventInfo, getTeamInfo, TeamInfo } from '../../Api/AttendanceApi';
+import LoadingScreen from '../../Components/LoadingScreen';
+import MenuHeader from '../../Components/MenuHeader';
+import MenuLink from '../../Components/MenuLink';
+import RoundedButton from '../../Components/RoundedButton';
+import { AttendableType } from '../../constants/api/Models/Attendance';
 import TapABuzzCard from './TapABuzzCard';
 
 type AttendanceProps = {

@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { useAppEnvironment } from '../AppEnvironment';
+import { useAppEnvironment } from '../../../AppEnvironment';
+import { AuthenticationState } from '../../constants/auth/AuthenticationState';
 import {
-  AuthenticationState,
   authTokenIsValid,
   getAuthenticationState,
   refreshAuth,
@@ -20,6 +20,11 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Provides simple state machine for authentication.
+ * @param param0 children: Props for this AuthContextProvider
+ * @returns React.FC<AuthProviderProps>
+ */
 function AuthContextProvider({ children }: AuthProviderProps) {
   const { environment } = useAppEnvironment();
 

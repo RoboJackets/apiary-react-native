@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { EventInfo, TeamInfo } from '../Api/MeetingsApi';
-import { AttendableType } from '../Api/Models/Attendance';
-import MenuHeader from '../Components/MenuHeader';
-import RoundedButton from '../Components/RoundedButton';
-import ThemedText from '../Components/ThemedText';
+import { EventInfo, TeamInfo } from '../../Api/AttendanceApi';
+import MenuHeader from '../../Components/MenuHeader';
+import RoundedButton from '../../Components/RoundedButton';
+import ThemedText from '../../Components/ThemedText';
+import { AttendableType } from '../../constants/api/Models/Attendance';
 import BuzzCardPrompt from './BuzzCardPrompt';
 
 type AttendanceProps = {

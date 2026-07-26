@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { Permission } from './Models/Permission';
+import { Permission } from '../constants/api/Models/Permission';
 
 export type UserInfo<T extends object = NonNullable<unknown>> = {
   id: number;

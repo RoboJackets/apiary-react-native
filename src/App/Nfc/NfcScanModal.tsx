@@ -18,9 +18,6 @@ interface NfcScanModalProps {
   modalText: string;
   callback: (error: Error | null, result: number[] | null) => void;
 }
-// These are used for BuzzCard reading and will be needed later.
-//   const selectApp = [0x90, 0x5A, 0x00, 0x00, 0x03, 0xCD, 0xBB, 0xBB, 0x00];
-//   const readFile = [0x90, 0xBD, 0x00, 0x00, 0x07, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00];
 
 const NfcScanModal: React.FC<NfcScanModalProps> = (props: NfcScanModalProps) => {
   useEffect(() => {

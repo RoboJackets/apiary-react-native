@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Modal, RadioButton } from 'react-native-paper';
-import { APP_ENVIRONMENTS, useAppEnvironment } from '../AppEnvironment';
-import RoundedButton from '../Components/RoundedButton';
-import ThemedText from '../Components/ThemedText';
-import { useTheme } from '../Themes/ThemeContextProvider';
+import { APP_ENVIRONMENTS, useAppEnvironment } from '../../../AppEnvironment';
+import RoundedButton from '../../Components/RoundedButton';
+import ThemedText from '../../Components/ThemedText';
+import { useTheme } from '../../Themes/ThemeContextProvider';
 
 type EnvironmentSelectProps = {
   visible: boolean;

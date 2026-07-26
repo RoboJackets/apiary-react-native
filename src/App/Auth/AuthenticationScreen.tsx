@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppEnvironment } from '../AppEnvironment';
-import RoundedButton from '../Components/RoundedButton';
-import ThemedText from '../Components/ThemedText';
-import TransparentButton from '../Components/TransparentButton';
-import RoboBuzzSvg from '../icons/ic_robobuzz_white_outline.svg';
-import { useTheme } from '../Themes/ThemeContextProvider';
+import { useAppEnvironment } from '../../../AppEnvironment';
+import RoboBuzzSvg from '../../../public/ic_robobuzz_white_outline.svg';
+import RoundedButton from '../../Components/RoundedButton';
+import ThemedText from '../../Components/ThemedText';
+import TransparentButton from '../../Components/TransparentButton';
+import { AuthenticationState } from '../../constants/auth/AuthenticationState';
+import { useTheme } from '../../Themes/ThemeContextProvider';
 import { AuthContext } from './AuthContextProvider';
 import * as Authentication from './Authentication';
 import { authError } from './Authentication';
@@ -22,7 +23,7 @@ function AuthenticationScreen() {
     await Authentication.login(environment);
   };
   useEffect(() => {
-    if (auth?.authenticated === Authentication.AuthenticationState.ERROR) {
+    if (auth?.authenticated === AuthenticationState.ERROR) {
       Alert.alert(
         'Authentication Error',
         authError ??
@@ -31,10 +32,7 @@ function AuthenticationScreen() {
           {
             text: 'OK',
             onPress: () =>
-              Authentication.setAuthenticationState(
-                Authentication.AuthenticationState.UNAUTHENTICATED,
-                null,
-              ),
+              Authentication.setAuthenticationState(AuthenticationState.UNAUTHENTICATED, null),
           },
         ],
       );
