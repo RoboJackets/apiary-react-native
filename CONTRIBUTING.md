@@ -12,7 +12,7 @@
 
 ### Prerequisites
 
-Follow the instructions to [Set Up Your Environment](URL) for React Native development. **Windows** + **Linux**: Target OS = Android, **macOS**: Target OS = iOS and Android.
+Follow the instructions to [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) for React Native development. **Windows** + **Linux**: Target OS = Android, **macOS**: Target OS = iOS and Android.
 
 Also install the following:
 
