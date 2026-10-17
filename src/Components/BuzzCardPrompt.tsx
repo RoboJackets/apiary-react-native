@@ -1,15 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal, NativeModules, Platform, StyleSheet, TextInput, View } from 'react-native';
 import NfcManager, { NfcTech } from 'react-native-nfc-manager';
-import { useApi } from '../../Api/ApiContextProvider';
-import { EventInfo, postAttendance, TeamInfo } from '../../Api/AttendanceApi';
-import { ActionPrompt } from '../../Components/ActionPrompt';
-import RoundedButton from '../../Components/RoundedButton';
-import ThemedText from '../../Components/ThemedText';
-import { AttendableType, NfcSource } from '../../constants/api/Models/Attendance';
-import { READ_FILE, SELECT_APP } from '../../constants/BuzzCardReadCommands';
-import { useTheme } from '../../Themes/ThemeContextProvider';
-import { LastAttendeeProps } from './TapABuzzCard';
+import { NfcSource } from '../constants/api/Models/Attendance';
+import { READ_FILE, SELECT_APP } from '../constants/BuzzCardReadCommands';
+import { useTheme } from '../Themes/ThemeContextProvider';
+import { ActionPrompt } from './ActionPrompt';
+import RoundedButton from './RoundedButton';
+import ThemedText from './ThemedText';
 
 // Names taken from Android App
 export type BuzzCardState =
@@ -21,34 +18,45 @@ export type BuzzCardState =
   | 'Processing'
   | 'BadInternet';
 
+export type BuzzCardTap = {
+  gtid: number;
+  source: NfcSource;
+};
+
 interface BuzzCardPromptProps {
-  attendanceType: AttendableType;
-  attendable: TeamInfo | EventInfo;
-  setTotalAttendees: React.Dispatch<React.SetStateAction<number>>; // accepts either number or function
-  setLastAttendee: (state: LastAttendeeProps) => void;
+  onBuzzCardTap: (tap: BuzzCardTap) => Promise<void> | void;
+  paused?: boolean; // Used by Merchandise screen, when confirming pickup
 }
 
-const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
-  attendanceType,
-  attendable,
-  setTotalAttendees,
-  setLastAttendee,
-}) => {
-  const api = useApi();
+const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused = false }) => {
   const { currentTheme } = useTheme();
   const [buzzCardState, setBuzzCardState] = useState<BuzzCardState>('Ready');
   const [enterGTIDManually, setEnterGTIDManually] = useState<boolean>(false);
-  const lastGtidRef = useRef<number | null>(null); // keep track of last gtid to prevent duplicates
   const isMountedRef = useRef(true);
+  const pausedRef = useRef(paused);
+  const onBuzzCardTapRef = useRef(onBuzzCardTap);
+
+  // Update ref with onBuzzCardTap function passed in
+  useEffect(() => {
+    onBuzzCardTapRef.current = onBuzzCardTap;
+  }, [onBuzzCardTap]);
 
   useEffect(() => {
-    beginScan();
     return () => {
       // Mark as unmounted so callbacks don't update state
       isMountedRef.current = false;
-      NfcManager.cancelTechnologyRequest().catch(() => {});
     };
   }, []);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+    if (!paused) {
+      beginScan();
+    }
+    return () => {
+      NfcManager.cancelTechnologyRequest().catch(() => {});
+    };
+  }, [paused]);
 
   /**
    * Scanning function that is called to process buzzcard taps
@@ -114,16 +122,16 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
 
     const buzzString = String.fromCharCode(...result);
     const gtid = buzzString.substring(0, 9);
-    await processGtid(gtid, false);
+    await processGtid(gtid, NfcSource.NFC);
   };
 
   /**
    * Validates GTID format to use in POST request
    * @param gtid String GTID to be formatted into number
-   * @param manual True if GTID was entered via modal, false if entered via NFC scan
+   * @param source NfcSource.KEYBOARD if manually entered, NfcSource.NFC if scanned
    * @returns none
    */
-  const processGtid = async (gtid: string, manual: boolean) => {
+  const processGtid = async (gtid: string, source: NfcSource) => {
     setEnterGTIDManually(false); // closes the modal, not related to manual param
     // Validate GTID format
     if (!/^90[0-9]{7}$/.test(gtid)) {
@@ -138,50 +146,16 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
       return;
     }
 
-    if (manual) {
-      await onBuzzCardTap(gtidNumber, NfcSource.KEYBOARD);
-    } else {
-      await onBuzzCardTap(gtidNumber, NfcSource.NFC);
+    setBuzzCardState('Processing');
+    try {
+      await onBuzzCardTapRef.current({ gtid: gtidNumber, source });
+      if (isMountedRef.current) setBuzzCardState('Ready');
+    } catch {
+      if (isMountedRef.current) setBuzzCardState('BadInternet');
     }
 
-    setBuzzCardState('Ready');
-    if (!manual) beginScan();
-  };
-
-  /**
-   * Makes post request via Axios given GTID and NFC Source
-   * @param gtid Number GTID
-   * @param source Keyboard or NFC
-   * @returns none
-   */
-  const onBuzzCardTap = async (gtid: number, source: NfcSource) => {
-    setBuzzCardState('Processing');
-
-    const props = {
-      attendable_type: attendanceType,
-      attendable_id: attendable.id,
-      gtid: gtid,
-      source: `MyRoboJackets ${Platform.OS === 'ios' ? 'iOS' : 'Android'} - ${source}`,
-    };
-
-    try {
-      const res = await postAttendance(api, props);
-      if (!res.success) {
-        setBuzzCardState('BadInternet');
-        return;
-      }
-
-      if (lastGtidRef.current !== gtid) {
-        setTotalAttendees((prev) => prev + 1);
-        lastGtidRef.current = gtid;
-      }
-      const attendeeName = res.data.attendance.attendee?.name ?? 'Non-member';
-      setLastAttendee({
-        id: gtid,
-        name: attendeeName,
-      });
-    } catch (error) {
-      setBuzzCardState('BadInternet');
+    if (source === NfcSource.NFC && isMountedRef.current && !pausedRef.current) {
+      beginScan();
     }
   };
 
@@ -209,7 +183,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
             <View style={styles.modalButtonContainer}>
               <View style={styles.modalButton}>
                 <RoundedButton
-                  onPress={() => processGtid(gtid, true)}
+                  onPress={() => processGtid(gtid, NfcSource.KEYBOARD)}
                   title="Enter"
                   color={currentTheme.primary as string}
                   textColor="#000000"
