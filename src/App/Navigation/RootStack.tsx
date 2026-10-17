@@ -16,10 +16,11 @@ type NfcState = 'enabled' | 'disabled' | 'unsupported';
 function RootStack() {
   const { currentTheme } = useTheme();
   const auth = useContext(AuthContext);
-  const [nfcEnabled, setNfcEnabled] = useState<NfcState>('disabled');
+  const [nfcEnabled, setNfcEnabled] = useState<NfcState>(__DEV__ ? 'enabled' : 'disabled');
 
   useEffect(() => {
     const isEnabled = async () => {
+      if (__DEV__) return;
       try {
         const isSupported = await NfcManager.isSupported();
         if (!isSupported) {
