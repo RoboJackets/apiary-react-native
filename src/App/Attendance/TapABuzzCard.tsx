@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { EventInfo, TeamInfo } from '../../Api/AttendanceApi';
+import React, { useRef, useState } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
+import { useApi } from '../../Api/ApiContextProvider';
+import { EventInfo, TeamInfo, postAttendance } from '../../Api/AttendanceApi';
+import BuzzCardPrompt, { BuzzCardTap } from '../../Components/BuzzCardPrompt';
 import MenuHeader from '../../Components/MenuHeader';
 import RoundedButton from '../../Components/RoundedButton';
 import ThemedText from '../../Components/ThemedText';
 import { AttendableType } from '../../constants/api/Models/Attendance';
-import BuzzCardPrompt from './BuzzCardPrompt';
 
 type AttendanceProps = {
   attendanceType: AttendableType;
@@ -34,8 +35,34 @@ function TapABuzzCard({
   attendable,
   setAttendable,
 }: AttendanceProps) {
+  const api = useApi();
+  const lastGtidRef = useRef<number | null>(null); // keep track of last gtid to prevent duplicates
   const [totalAttendees, setTotalAttendees] = useState<number>(0);
   const [lastAttendee, setLastAttendee] = useState<LastAttendeeProps | null>(null);
+
+  const recordAttendance = async ({ gtid, source }: BuzzCardTap) => {
+    const props = {
+      attendable_type: attendanceType,
+      attendable_id: attendable.id,
+      gtid: gtid,
+      source: `MyRoboJackets ${Platform.OS === 'ios' ? 'iOS' : 'Android'} - ${source}`,
+    };
+
+    const res = await postAttendance(api, props);
+    if (!res.success) {
+      throw new Error('Failed to record attendance');
+    }
+
+    if (lastGtidRef.current !== gtid) {
+      setTotalAttendees((prev) => prev + 1);
+      lastGtidRef.current = gtid;
+    }
+    const attendeeName = res.data.attendance.attendee?.name ?? 'Non-member';
+    setLastAttendee({
+      id: gtid,
+      name: attendeeName,
+    });
+  };
 
   function TopPanel() {
     return (
@@ -59,12 +86,7 @@ function TapABuzzCard({
   return (
     <>
       <TopPanel></TopPanel>
-      <BuzzCardPrompt
-        attendable={attendable}
-        setTotalAttendees={setTotalAttendees}
-        setLastAttendee={setLastAttendee}
-        attendanceType={attendanceType}
-      ></BuzzCardPrompt>
+      <BuzzCardPrompt onBuzzCardTap={recordAttendance}></BuzzCardPrompt>
       <View style={styles.bottomPanel}>
         <ThemedText style={styles.bottomPanelText} title={`Total attendees: ${totalAttendees}`} />
         {totalAttendees in AttendanceGoals && (
