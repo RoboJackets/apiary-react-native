@@ -50,9 +50,11 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused =
 
   useEffect(() => {
     pausedRef.current = paused;
-    if (!paused) {
-      beginScan();
+    if (paused) {
+      NfcManager.cancelTechnologyRequest().catch(() => {});
+      return;
     }
+    beginScan();
     return () => {
       NfcManager.cancelTechnologyRequest().catch(() => {});
     };
@@ -85,6 +87,21 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused =
   };
 
   /**
+   * Function to handle state changes and restart scanning.
+   * @param error String type of error to set
+   */
+  const handleStateChange = (error: BuzzCardState) => {
+    // Component is unmounted so state changes don't matter
+    if (!isMountedRef.current) {
+      return;
+    }
+    setBuzzCardState(error);
+    if (!pausedRef.current) {
+      beginScan();
+    }
+  };
+
+  /**
    * Callback function for scan modal
    * @param error
    * @param result Scanned GTID in char code format or null
@@ -96,9 +113,9 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused =
     if (error) {
       const errorMsg = error.message || '';
       if (errorMsg.includes('Wrong CLA')) {
-        setBuzzCardState('NotABuzzCard');
+        handleStateChange('NotABuzzCard');
       } else if (errorMsg.includes('Tag was lost') || errorMsg.includes('Incomplete response')) {
-        setBuzzCardState('TagLost');
+        handleStateChange('TagLost');
       } else if (
         errorMsg.includes('cancelled') || // ios wording
         errorMsg.includes('canceled') ||
@@ -108,15 +125,14 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused =
         // intentional cancellation on unmount — do nothing
         return;
       } else {
-        setBuzzCardState('UnknownNfcError');
+        handleStateChange('UnknownNfcError');
       }
       return;
     }
 
     if (!result) {
       // User cancelled
-      setBuzzCardState('Ready');
-      beginScan();
+      handleStateChange('Ready');
       return;
     }
 
@@ -135,14 +151,14 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused =
     setEnterGTIDManually(false); // closes the modal, not related to manual param
     // Validate GTID format
     if (!/^90[0-9]{7}$/.test(gtid)) {
-      setBuzzCardState('InvalidBuzzCardData');
+      handleStateChange('InvalidBuzzCardData');
       return;
     }
 
     // Try to parse as integer (catches NumberFormatException equivalent)
     const gtidNumber = parseInt(gtid, 10);
     if (isNaN(gtidNumber)) {
-      setBuzzCardState('InvalidBuzzCardData');
+      handleStateChange('InvalidBuzzCardData');
       return;
     }
 
@@ -154,6 +170,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused =
       if (isMountedRef.current) setBuzzCardState('BadInternet');
     }
 
+    // Only restart scanning if component mounted, not using keyboard, and not paused
     if (source === NfcSource.NFC && isMountedRef.current && !pausedRef.current) {
       beginScan();
     }
