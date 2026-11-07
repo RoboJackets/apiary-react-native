@@ -16,7 +16,7 @@ export type BuzzCardState =
   | 'UnknownNfcError'
   | 'Ready'
   | 'Processing'
-  | 'BadInternet';
+  | 'SaveFailed';
 
 export type BuzzCardTap = {
   gtid: number;
@@ -167,7 +167,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused =
       await onBuzzCardTapRef.current({ gtid: gtidNumber, source });
       if (isMountedRef.current) setBuzzCardState('Ready');
     } catch {
-      if (isMountedRef.current) setBuzzCardState('BadInternet');
+      if (isMountedRef.current) setBuzzCardState('SaveFailed');
     }
 
     // Only restart scanning if component mounted, not using keyboard, and not paused
@@ -251,13 +251,12 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused =
             subtitle="If you are tapping a BuzzCard, please hold it against your phone longer, or reach out in #it-helpdesk for assistance"
             subtitle2="Unexpected BuzzCard data format"
           ></ActionPrompt>
-        ) : buzzCardState === 'BadInternet' ? (
+        ) : buzzCardState === 'SaveFailed' ? (
           <ActionPrompt
             icon="contactless"
             color={currentTheme.error}
             title="Card read error"
-            subtitle="The last tap was successful, but we couldn't save the data."
-            subtitle2="Check your internet connection and try again."
+            subtitle="We couldn't save that tap. Try again or check your connection."
           ></ActionPrompt>
         ) : buzzCardState === 'UnknownNfcError' ? (
           <ActionPrompt
