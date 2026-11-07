@@ -1,12 +1,29 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '../Themes/ThemeContextProvider';
+import { ItemList } from '../Components/ItemList';
 
 function MerchandiseScreen() {
+  const { currentTheme } = useTheme();
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentTheme.background,
+      flex: 1,
+    },
+    items: {
+      color: currentTheme.onSurface,
+      fontSize: 18,
+      marginHorizontal: 17,
+    },
+    title: {
+      color: currentTheme.onSurface,
+      fontSize: 25,
+      marginHorizontal: 17,
+    },
+  });
   return (
-    // eslint-disable-next-line react-native/no-inline-styles
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Merchandise Screen</Text>
-      {/* {
+    <View style={styles.container}>
+      {
         //Example of how to use the ItemList component. Replace with actual merchandise data and navigation logic as needed.
         <ItemList
           items={[
@@ -30,14 +47,14 @@ function MerchandiseScreen() {
           onItemSelected={(item) => console.log(item)}
           title={
             //Replace with actual color from current theme
-            <Text style={{ color: Colors.surfaceDark }}>Pick a merchandise item to distribute</Text>
+            <Text style={styles.title}>Pick a merchandise item to distribute</Text>
           }
           itemKey={(item, index) => index.toString()}
           empty={<Text>No items available</Text>}
           //Replace with actual color from current theme
-          itemContent={(item) => <Text style={{ color: Colors.surfaceDark }}>{item.name}</Text>}
+          itemContent={(item) => <Text style={styles.items}>{item.name}</Text>}
         />
-      } */}
+      }
     </View>
   );
 }

@@ -51,10 +51,10 @@ const styles = StyleSheet.create({
   },
 
   separator: {
-    // Default styles, which can be overridden by props
-    backgroundColor: '#ccc', // Default color (light gray)
-    height: 2, // Determines the thickness of the line
-    marginVertical: 5, // Adds some space above and below the line
-    width: '100%', // Makes the line span the full width
+    alignSelf: 'center',
+    backgroundColor: '#ccc',
+    height: 2,
+    marginVertical: 2,
+    width: '93%',
   },
 });
