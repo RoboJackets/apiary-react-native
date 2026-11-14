@@ -1,26 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '../Themes/ThemeContextProvider';
 import { ItemList } from '../Components/ItemList';
+import { useTheme } from '../Themes/ThemeContextProvider';
 
 function MerchandiseScreen() {
   const { currentTheme } = useTheme();
-  const styles = StyleSheet.create({
-    container: {
-      backgroundColor: currentTheme.background,
-      flex: 1,
-    },
-    items: {
-      color: currentTheme.onSurface,
-      fontSize: 18,
-      marginHorizontal: 17,
-    },
-    title: {
-      color: currentTheme.onSurface,
-      fontSize: 25,
-      marginHorizontal: 17,
-    },
-  });
+  const styles = createStyles(currentTheme);
   return (
     <View style={styles.container}>
       {
@@ -57,6 +42,27 @@ function MerchandiseScreen() {
       }
     </View>
   );
+}
+
+function createStyles(currentTheme: ReturnType<typeof useTheme>['currentTheme']) {
+  return StyleSheet.create({
+    container: {
+      backgroundColor: currentTheme.background,
+      flex: 1,
+    },
+    items: {
+      color: currentTheme.onSurface,
+      fontSize: 18,
+      marginHorizontal: 17,
+    },
+    title: {
+      color: currentTheme.onSurface,
+      fontSize: 25,
+      marginHorizontal: 17,
+      marginTop: 10,
+      marginBottom:10,
+    },
+  });
 }
 
 export default MerchandiseScreen;
