@@ -28,12 +28,16 @@ export function ItemList<T>(props: ItemListProps<T>) {
             <View>{props.separator ?? <View style={styles.separator} />}</View>
           )}
           renderItem={({ item }) => (
-            <View>
-              <Pressable onPress={() => props.onItemSelected(item)} style={styles.listItem}>
-                {props.itemContent(item)}
-              </Pressable>
-            </View>
-          )}
+            <Pressable
+              onPress={() => props.onItemSelected(item)}
+              style={({ pressed }) => [
+                styles.listItem,
+                pressed && styles.listItemPressed,
+              ]}
+              >
+            {props.itemContent(item)}
+            </Pressable>
+        )}
         />
       )}
     </View>
@@ -46,15 +50,19 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   listItem: {
-    borderColor: '#ddd',
     padding: 16,
   },
-
+  listItemPressed: {
+    backgroundColor: '#ccc',
+    opacity: 0.8,
+    borderRadius: 12,
+    transform: [{ scale: 0.95 }],
+  },
   separator: {
-    // Default styles, which can be overridden by props
-    backgroundColor: '#ccc', // Default color (light gray)
-    height: 2, // Determines the thickness of the line
-    marginVertical: 5, // Adds some space above and below the line
-    width: '100%', // Makes the line span the full width
+    alignSelf: 'center',
+    backgroundColor: '#ccc',
+    height: 2,
+    marginVertical: 2,
+    width: '93%',
   },
 });
