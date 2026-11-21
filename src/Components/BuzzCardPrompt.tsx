@@ -1,15 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal, NativeModules, Platform, StyleSheet, TextInput, View } from 'react-native';
 import NfcManager, { NfcTech } from 'react-native-nfc-manager';
-import { useApi } from '../../Api/ApiContextProvider';
-import { EventInfo, postAttendance, TeamInfo } from '../../Api/AttendanceApi';
-import { ActionPrompt } from '../../Components/ActionPrompt';
-import RoundedButton from '../../Components/RoundedButton';
-import ThemedText from '../../Components/ThemedText';
-import { AttendableType, NfcSource } from '../../constants/api/Models/Attendance';
-import { READ_FILE, SELECT_APP } from '../../constants/BuzzCardReadCommands';
-import { useTheme } from '../../Themes/ThemeContextProvider';
-import { LastAttendeeProps } from './TapABuzzCard';
+import { NfcSource } from '../constants/api/Models/Attendance';
+import { READ_FILE, SELECT_APP } from '../constants/BuzzCardReadCommands';
+import { useTheme } from '../Themes/ThemeContextProvider';
+import { ActionPrompt } from './ActionPrompt';
+import RoundedButton from './RoundedButton';
+import ThemedText from './ThemedText';
 
 // Names taken from Android App
 export type BuzzCardState =
@@ -19,36 +16,49 @@ export type BuzzCardState =
   | 'UnknownNfcError'
   | 'Ready'
   | 'Processing'
-  | 'BadInternet';
+  | 'SaveFailed';
+
+export type BuzzCardTap = {
+  gtid: number;
+  source: NfcSource;
+};
 
 interface BuzzCardPromptProps {
-  attendanceType: AttendableType;
-  attendable: TeamInfo | EventInfo;
-  setTotalAttendees: React.Dispatch<React.SetStateAction<number>>; // accepts either number or function
-  setLastAttendee: (state: LastAttendeeProps) => void;
+  onBuzzCardTap: (tap: BuzzCardTap) => Promise<void> | void;
+  paused?: boolean; // Used by Merchandise screen, when confirming pickup
 }
 
-const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
-  attendanceType,
-  attendable,
-  setTotalAttendees,
-  setLastAttendee,
-}) => {
-  const api = useApi();
+const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({ onBuzzCardTap, paused = false }) => {
   const { currentTheme } = useTheme();
   const [buzzCardState, setBuzzCardState] = useState<BuzzCardState>('Ready');
   const [enterGTIDManually, setEnterGTIDManually] = useState<boolean>(false);
-  const lastGtidRef = useRef<number | null>(null); // keep track of last gtid to prevent duplicates
   const isMountedRef = useRef(true);
+  const pausedRef = useRef(paused);
+  const onBuzzCardTapRef = useRef(onBuzzCardTap);
+
+  // Update ref with onBuzzCardTap function passed in
+  useEffect(() => {
+    onBuzzCardTapRef.current = onBuzzCardTap;
+  }, [onBuzzCardTap]);
 
   useEffect(() => {
-    beginScan();
     return () => {
       // Mark as unmounted so callbacks don't update state
       isMountedRef.current = false;
-      NfcManager.cancelTechnologyRequest().catch(() => {});
     };
   }, []);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+    if (paused) {
+      NfcManager.cancelTechnologyRequest().catch(() => {});
+      return;
+    }
+    beginScan();
+    return () => {
+      NfcManager.cancelTechnologyRequest().catch(() => {});
+    };
+  }, [paused]);
 
   /**
    * Scanning function that is called to process buzzcard taps
@@ -77,6 +87,21 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
   };
 
   /**
+   * Function to handle state changes and restart scanning.
+   * @param error String type of error to set
+   */
+  const handleStateChange = (error: BuzzCardState) => {
+    // Component is unmounted so state changes don't matter
+    if (!isMountedRef.current) {
+      return;
+    }
+    setBuzzCardState(error);
+    if (!pausedRef.current) {
+      beginScan();
+    }
+  };
+
+  /**
    * Callback function for scan modal
    * @param error
    * @param result Scanned GTID in char code format or null
@@ -88,9 +113,9 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
     if (error) {
       const errorMsg = error.message || '';
       if (errorMsg.includes('Wrong CLA')) {
-        setBuzzCardState('NotABuzzCard');
+        handleStateChange('NotABuzzCard');
       } else if (errorMsg.includes('Tag was lost') || errorMsg.includes('Incomplete response')) {
-        setBuzzCardState('TagLost');
+        handleStateChange('TagLost');
       } else if (
         errorMsg.includes('cancelled') || // ios wording
         errorMsg.includes('canceled') ||
@@ -100,88 +125,54 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
         // intentional cancellation on unmount — do nothing
         return;
       } else {
-        setBuzzCardState('UnknownNfcError');
+        handleStateChange('UnknownNfcError');
       }
       return;
     }
 
     if (!result) {
       // User cancelled
-      setBuzzCardState('Ready');
-      beginScan();
+      handleStateChange('Ready');
       return;
     }
 
     const buzzString = String.fromCharCode(...result);
     const gtid = buzzString.substring(0, 9);
-    await processGtid(gtid, false);
+    await processGtid(gtid, NfcSource.NFC);
   };
 
   /**
    * Validates GTID format to use in POST request
    * @param gtid String GTID to be formatted into number
-   * @param manual True if GTID was entered via modal, false if entered via NFC scan
+   * @param source NfcSource.KEYBOARD if manually entered, NfcSource.NFC if scanned
    * @returns none
    */
-  const processGtid = async (gtid: string, manual: boolean) => {
+  const processGtid = async (gtid: string, source: NfcSource) => {
     setEnterGTIDManually(false); // closes the modal, not related to manual param
     // Validate GTID format
     if (!/^90[0-9]{7}$/.test(gtid)) {
-      setBuzzCardState('InvalidBuzzCardData');
+      handleStateChange('InvalidBuzzCardData');
       return;
     }
 
     // Try to parse as integer (catches NumberFormatException equivalent)
     const gtidNumber = parseInt(gtid, 10);
     if (isNaN(gtidNumber)) {
-      setBuzzCardState('InvalidBuzzCardData');
+      handleStateChange('InvalidBuzzCardData');
       return;
     }
 
-    if (manual) {
-      await onBuzzCardTap(gtidNumber, NfcSource.KEYBOARD);
-    } else {
-      await onBuzzCardTap(gtidNumber, NfcSource.NFC);
+    setBuzzCardState('Processing');
+    try {
+      await onBuzzCardTapRef.current({ gtid: gtidNumber, source });
+      if (isMountedRef.current) setBuzzCardState('Ready');
+    } catch {
+      if (isMountedRef.current) setBuzzCardState('SaveFailed');
     }
 
-    setBuzzCardState('Ready');
-    if (!manual) beginScan();
-  };
-
-  /**
-   * Makes post request via Axios given GTID and NFC Source
-   * @param gtid Number GTID
-   * @param source Keyboard or NFC
-   * @returns none
-   */
-  const onBuzzCardTap = async (gtid: number, source: NfcSource) => {
-    setBuzzCardState('Processing');
-
-    const props = {
-      attendable_type: attendanceType,
-      attendable_id: attendable.id,
-      gtid: gtid,
-      source: `MyRoboJackets ${Platform.OS === 'ios' ? 'iOS' : 'Android'} - ${source}`,
-    };
-
-    try {
-      const res = await postAttendance(api, props);
-      if (!res.success) {
-        setBuzzCardState('BadInternet');
-        return;
-      }
-
-      if (lastGtidRef.current !== gtid) {
-        setTotalAttendees((prev) => prev + 1);
-        lastGtidRef.current = gtid;
-      }
-      const attendeeName = res.data.attendance.attendee?.name ?? 'Non-member';
-      setLastAttendee({
-        id: gtid,
-        name: attendeeName,
-      });
-    } catch (error) {
-      setBuzzCardState('BadInternet');
+    // Only restart scanning if component mounted, not using keyboard, and not paused
+    if (source === NfcSource.NFC && isMountedRef.current && !pausedRef.current) {
+      beginScan();
     }
   };
 
@@ -209,7 +200,7 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
             <View style={styles.modalButtonContainer}>
               <View style={styles.modalButton}>
                 <RoundedButton
-                  onPress={() => processGtid(gtid, true)}
+                  onPress={() => processGtid(gtid, NfcSource.KEYBOARD)}
                   title="Enter"
                   color={currentTheme.primary as string}
                   textColor="#000000"
@@ -260,13 +251,12 @@ const BuzzCardPrompt: React.FC<BuzzCardPromptProps> = ({
             subtitle="If you are tapping a BuzzCard, please hold it against your phone longer, or reach out in #it-helpdesk for assistance"
             subtitle2="Unexpected BuzzCard data format"
           ></ActionPrompt>
-        ) : buzzCardState === 'BadInternet' ? (
+        ) : buzzCardState === 'SaveFailed' ? (
           <ActionPrompt
             icon="contactless"
             color={currentTheme.error}
             title="Card read error"
-            subtitle="The last tap was successful, but we couldn't save the data."
-            subtitle2="Check your internet connection and try again."
+            subtitle="We couldn't save that tap. Try again or check your connection."
           ></ActionPrompt>
         ) : buzzCardState === 'UnknownNfcError' ? (
           <ActionPrompt
