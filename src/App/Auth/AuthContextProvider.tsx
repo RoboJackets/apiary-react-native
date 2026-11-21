@@ -1,0 +1,67 @@
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { useAppEnvironment } from '../../../AppEnvironment';
+import { AuthenticationState } from '../../constants/auth/AuthenticationState';
+import {
+  authTokenIsValid,
+  getAuthenticationState,
+  refreshAuth,
+  setAuthenticationState,
+  subscribeAuthState,
+} from './Authentication';
+
+type AuthContextType = {
+  authenticated: AuthenticationState | null;
+  setAuthenticated: (u: AuthenticationState) => void;
+};
+
+type AuthProviderProps = {
+  children: ReactNode;
+};
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+/**
+ * Provides simple state machine for authentication.
+ * @param param0 children: Props for this AuthContextProvider
+ * @returns React.FC<AuthProviderProps>
+ */
+function AuthContextProvider({ children }: AuthProviderProps) {
+  const { environment } = useAppEnvironment();
+
+  const [authenticated, setAuthenticated] = useState<AuthenticationState | null>(() =>
+    getAuthenticationState(),
+  );
+
+  useEffect(() => {
+    async function loggedIn() {
+      if (await authTokenIsValid(environment)) {
+        setAuthenticationState(AuthenticationState.AUTHENTICATED, null);
+        return true;
+      }
+
+      return await refreshAuth(environment);
+    }
+
+    const unsubscribe = subscribeAuthState((state) => {
+      setAuthenticated(state);
+    });
+    loggedIn();
+    return unsubscribe;
+  }, [environment]);
+
+  return (
+    <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthContextProvider');
+  }
+  return context;
+}
+
+export default AuthContextProvider;
